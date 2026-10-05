@@ -22,3 +22,7 @@ dist/
 
 # VS Code
 .vscode/
+
+# Google Service Account credentials
+server/credentials.json
+server/node_modules/
