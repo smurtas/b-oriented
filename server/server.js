@@ -176,6 +176,14 @@ app.post('/api/results', async (req, res) => {
 
 })
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, '127.0.0.1', () => {
     console.log(`B_Oriented API attiva su http://localhost:${PORT}`)
-})  
+})
+
+server.on('error', (error) => {
+    console.error('Errore server:', error)
+})
+
+server.on('close', () => {
+    console.log('Il server HTTP è stato chiuso')
+})

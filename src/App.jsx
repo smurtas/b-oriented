@@ -45,7 +45,7 @@ function App() {
         console.error('ERRORE FETCH:', error)
       })*/
 
-    fetch('http://localhost:3000/api/questions')
+    fetch('/api/questions')
       .then(response => response.json())
       .then(data => {
         console.log('Domande ricevute:', data)
@@ -79,7 +79,7 @@ function App() {
               className="school-logo"
             />
 
-            <span>B_Oriented</span>
+            <span>B-Oriented</span>
           </div>
 
           <div className="school">
@@ -365,6 +365,7 @@ function App() {
                   className="next-button"
                   disabled={!answers[question.id]}
                   onClick={() => {
+                    console.log('CLICK TERMINA/AVANTI', currentQuestion, questions.length)
 
                     // Se NON siamo all'ultima domanda,
                     // passa alla domanda successiva
@@ -376,7 +377,7 @@ function App() {
 
                       // Siamo all'ultima domanda:
                       // inviamo tutte le risposte al backend
-                      fetch('http://localhost:3000/api/results', {
+                      fetch('/api/results' , {
                         method: 'POST',
                         headers: {
                           'Content-Type': 'application/json'
@@ -525,7 +526,7 @@ function App() {
 
       {/* FOOTER */}
       <footer>
-        B_Oriented · ITT Buonarroti Trento
+        &copy; B_Oriented · ITT Buonarroti Trento
       </footer>
 
     </div>
