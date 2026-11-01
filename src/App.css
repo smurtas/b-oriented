@@ -1481,3 +1481,397 @@ button {
     gap: 12px;
     margin-top: 28px;
 }
+
+/* ======================================================
+   RISULTATI INTERMEDI DEI PASSI
+   ====================================================== */
+
+.step-result-card {
+    max-width: 900px;
+
+    margin: 48px auto;
+
+    padding: 42px 46px;
+
+    background: #ffffff;
+
+    border: 1px solid #dce3eb;
+    border-radius: 10px;
+
+    box-shadow:
+        0 12px 32px
+        rgba(15, 23, 42, 0.06);
+
+    animation: sectionEnter 0.35s ease;
+}
+
+.step-result-card > h1 {
+    margin:
+        16px
+        0
+        14px;
+
+    color: #173b67;
+
+    font-size: 40px;
+
+    line-height: 1.15;
+}
+
+.step-result-intro {
+    max-width: 720px;
+
+    margin:
+        0
+        0
+        30px;
+
+    color: #617083;
+
+    font-size: 17px;
+
+    line-height: 1.65;
+}
+
+
+/* ------------------------------------------------------
+   RISULTATO PRINCIPALE PASSO 1
+   ------------------------------------------------------ */
+
+.step-result-highlight {
+    margin-bottom: 30px;
+
+    padding: 22px 24px;
+
+    background: #edf4fc;
+
+    border-left:
+        5px
+        solid
+        #173b67;
+
+    border-radius:
+        4px
+        7px
+        7px
+        4px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+.step-result-highlight strong {
+    color: #173b67;
+
+    font-size: 24px;
+}
+
+.step-result-label {
+    color: #667085;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.8px;
+
+    text-transform: uppercase;
+}
+
+.step-result-tie {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding:
+        8px
+        0;
+}
+
+
+/* ------------------------------------------------------
+   CLASSIFICA PASSO 1
+   ------------------------------------------------------ */
+
+.step-result-ranking {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+
+    margin-bottom: 28px;
+}
+
+.step-result-row {
+    display: grid;
+
+    grid-template-columns:
+        46px
+        1fr
+        auto;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding:
+        13px
+        15px;
+
+    background: #f9fbfd;
+
+    border:
+        1px
+        solid
+        #d9e0e8;
+
+    border-radius: 6px;
+
+    transition:
+        transform 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.step-result-row:hover {
+    transform:
+        translateX(3px);
+
+    background: #f3f7fb;
+}
+
+.step-result-position {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #173b67;
+
+    color: #ffffff;
+
+    border-radius: 4px;
+
+    font-weight: 800;
+}
+
+.step-result-name {
+    color: #344054;
+
+    font-weight: 600;
+}
+
+.step-result-row strong {
+    color: #173b67;
+}
+
+
+/* ------------------------------------------------------
+   NOTA INTERMEDIA
+   ------------------------------------------------------ */
+
+.step-result-note {
+    margin-top: 26px;
+
+    padding:
+        17px
+        19px;
+
+    color: #5d6876;
+
+    background: #f5f7fa;
+
+    border-left:
+        4px
+        solid
+        #8ba1ba;
+
+    line-height: 1.55;
+}
+
+
+/* ======================================================
+   RIEPILOGO PASSO 2
+   ====================================================== */
+
+.summary-section {
+    margin-top: 32px;
+}
+
+.summary-section h2 {
+    margin:
+        0
+        0
+        16px;
+
+    color: #25384d;
+
+    font-size: 22px;
+}
+
+
+/* ------------------------------------------------------
+   PRIORITÀ LAVORATIVE
+   ------------------------------------------------------ */
+
+.work-priorities {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.work-priority {
+    display: grid;
+
+    grid-template-columns:
+        44px
+        1fr;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding:
+        15px
+        16px;
+
+    border:
+        1px
+        solid
+        #d9e0e8;
+
+    border-left:
+        4px
+        solid
+        #173b67;
+
+    border-radius: 6px;
+
+    background: #ffffff;
+}
+
+.work-priority-number {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #ffffff;
+
+    background: #173b67;
+
+    border-radius: 4px;
+
+    font-weight: 800;
+}
+
+
+/* ------------------------------------------------------
+   COMPETENZE
+   ------------------------------------------------------ */
+
+.competence-summary {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.competence-summary-row {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 18px;
+
+    padding:
+        13px
+        16px;
+
+    background: #f9fbfd;
+
+    border:
+        1px
+        solid
+        #d9e0e8;
+
+    border-radius: 6px;
+}
+
+.competence-summary-row span {
+    color: #344054;
+
+    font-weight: 600;
+}
+
+.competence-summary-row strong {
+    flex-shrink: 0;
+
+    color: #173b67;
+}
+
+
+/* ======================================================
+   MOBILE
+   ====================================================== */
+
+@media (
+    max-width: 560px
+) {
+
+    .step-result-card {
+        margin-top: 28px;
+
+        padding:
+            28px
+            18px;
+    }
+
+    .step-result-card > h1 {
+        font-size: 31px;
+    }
+
+    .step-result-row {
+        grid-template-columns:
+            40px
+            1fr;
+
+        gap: 10px;
+    }
+
+    .step-result-row > strong {
+        grid-column: 2;
+    }
+
+    .step-result-tie {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .competence-summary-row {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 5px;
+    }
+
+}

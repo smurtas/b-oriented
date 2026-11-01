@@ -645,9 +645,11 @@ function App() {
         await response.json()
 
 
-      setResult(data)
+setResult(data)
 
-      setPage('results')
+setCurrentSection(
+  'step1-results'
+)
 
       window.scrollTo({
         top: 0,
@@ -1833,9 +1835,7 @@ function App() {
 
                     else {
 
-                      setCurrentSection(
-                        'intro-work'
-                      )
+                      submitResults()
 
                       window.scrollTo({
                         top: 0,
@@ -1869,6 +1869,227 @@ function App() {
     }
 
   }
+
+
+// ==========================
+// SEZIONE RISULTATI
+// ==========================
+
+if (
+  currentSection ===
+  'step1-results' &&
+  result
+) {
+
+  const recommended =
+    Array.isArray(result.recommended)
+      ? result.recommended
+      : result.recommended
+        ? [result.recommended]
+        : []
+
+
+  return (
+
+    <div className="app">
+
+      <main className="main-container">
+
+        <BrandHeader />
+
+        <StepsOverview
+          activeStep={1}
+        />
+
+
+        <div className="step-result-card">
+
+          <div className="transition-label">
+            PASSO 1 COMPLETATO
+          </div>
+
+
+          <h1>
+            Il tuo profilo di interessi
+          </h1>
+
+
+          <p className="step-result-intro">
+
+            In base alle attività che hai
+            indicato come più interessanti,
+            questi sono gli indirizzi che
+            risultano più vicini ai tuoi
+            interessi.
+
+          </p>
+
+
+          {recommended.length === 1 ? (
+
+            <div className="step-result-highlight">
+
+              <span className="step-result-label">
+                Maggiore affinità
+              </span>
+
+              <strong>
+                {
+                  trackNames[
+                    recommended[0].indirizzo
+                  ]
+                }
+              </strong>
+
+              <span>
+                {
+                  recommended[0].punteggio
+                } punti
+              </span>
+
+            </div>
+
+          ) : (
+
+            <div className="step-result-highlight">
+
+              <span className="step-result-label">
+                Affinità condivisa
+              </span>
+
+              {recommended.map(item => (
+
+                <div
+                  className="step-result-tie"
+                  key={item.indirizzo}
+                >
+
+                  <strong>
+                    {
+                      trackNames[
+                        item.indirizzo
+                      ]
+                    }
+                  </strong>
+
+                  <span>
+                    {item.punteggio} punti
+                  </span>
+
+                </div>
+
+              ))}
+
+            </div>
+
+          )}
+
+
+          <div className="step-result-ranking">
+
+            {result.ranking.map(
+              (
+                item,
+                index
+              ) => (
+
+                <div
+                  key={item.indirizzo}
+                  className="step-result-row"
+                >
+
+                  <div className="step-result-position">
+                    {index + 1}
+                  </div>
+
+                  <div className="step-result-name">
+
+                    {
+                      trackNames[
+                        item.indirizzo
+                      ]
+                    }
+
+                  </div>
+
+                  <strong>
+                    {item.punteggio}
+                  </strong>
+
+                </div>
+
+              )
+            )}
+
+          </div>
+
+
+          <div className="step-result-note">
+
+            <strong>
+              Attenzione:
+            </strong>
+
+            questo risultato riguarda
+            solamente i tuoi interessi.
+
+            Non rappresenta ancora
+            l'esito finale del percorso
+            di orientamento.
+
+          </div>
+
+
+          <div className="navigation-buttons">
+
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={() => {
+
+                setCurrentReflection(
+                  reflectionQuestions.length - 1
+                )
+
+                setCurrentSection(
+                  'reflection'
+                )
+
+              }}
+            >
+              Indietro
+            </button>
+
+
+            <button
+              type="button"
+              className="primary-button"
+              onClick={() => {
+
+                setCurrentSection(
+                  'intro-work'
+                )
+
+                window.scrollTo({
+                  top: 0,
+                  behavior: 'smooth'
+                })
+
+              }}
+            >
+              Continua al Passo 2
+            </button>
+
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+  )
+}
 
   // ============================
   // SEZIONE INTRO-WORK 
@@ -2691,55 +2912,228 @@ function App() {
     )
   }
 
-  //
-  // PROVVISORIO
-  //
+  //  ===========================
+  // SEZIONE LAVORO COMPLETATO
+  // ============================
 
   if (
-    currentSection ===
-    'work-completed'
-  ) {
+  currentSection ===
+  'work-completed'
+) {
 
-    return (
+  // Prime due caratteristiche
+  // del lavoro scelte dallo studente
+  const topWorkCharacteristics =
+    workRanking.slice(0, 2)
 
-      <div className="app">
 
-        <main className="main-container">
+  // Ordiniamo le competenze
+  // in base al punteggio attribuito
+  const rankedCompetences =
+    workCompetenceQuestions
 
-          <BrandHeader />
+      .map(question => ({
 
-          <StepsOverview
-            activeStep={2}
-          />
+        id:
+          question.id,
 
-          <div className="transition-card">
+        domanda:
+          question.domanda,
 
-            <div className="transition-label">
-              PASSO 2 COMPLETATO
+        value:
+          Number(
+            workAnswers[
+              question.id
+            ] || 0
+          )
+
+      }))
+
+      .sort(
+        (a, b) =>
+          b.value - a.value
+      )
+
+
+  // Mostriamo le prime 5
+  const topCompetences =
+    rankedCompetences.slice(0, 5)
+
+
+  return (
+
+    <div className="app">
+
+      <main className="main-container">
+
+        <BrandHeader />
+
+        <StepsOverview
+          activeStep={2}
+        />
+
+
+        <div className="step-result-card">
+
+          <div className="transition-label">
+            PASSO 2 COMPLETATO
+          </div>
+
+
+          <h1>
+            Il tuo profilo lavorativo
+          </h1>
+
+
+          <p className="step-result-intro">
+
+            Le tue risposte descrivono
+            quali aspetti consideri più
+            importanti nel lavoro e quali
+            competenze ritieni di possedere
+            maggiormente.
+
+          </p>
+
+
+          {/* ======================================
+              PRIME DUE CARATTERISTICHE
+             ====================================== */}
+
+          <div className="summary-section">
+
+            <h2>
+              Nel lavoro vorresti soprattutto...
+            </h2>
+
+
+            <div className="work-priorities">
+
+              {topWorkCharacteristics.map(
+                (
+                  item,
+                  index
+                ) => (
+
+                  <div
+                    className="work-priority"
+                    key={item.id}
+                  >
+
+                    <div className="work-priority-number">
+                      {index + 1}
+                    </div>
+
+                    <div>
+                      {item.domanda}
+                    </div>
+
+                  </div>
+
+                )
+              )}
+
             </div>
-
-            <h1>
-              Lavoro completato
-            </h1>
-
-            <p>
-              Hai completato anche
-              la seconda parte del percorso.
-            </p>
-
-            <p>
-              Il prossimo passo sarà dedicato
-              al tuo metodo di studio.
-            </p>
 
           </div>
 
-        </main>
 
-      </div>
+          {/* ======================================
+              COMPETENZE PIÙ FORTI
+             ====================================== */}
 
-    )
-  }
+          <div className="summary-section">
+
+            <h2>
+              Le competenze che ritieni
+              di possedere maggiormente
+            </h2>
+
+
+            <div className="competence-summary">
+
+              {topCompetences.map(
+                competence => (
+
+                  <div
+                    className="competence-summary-row"
+                    key={competence.id}
+                  >
+
+                    <span>
+                      {competence.domanda}
+                    </span>
+
+                    <strong>
+                      {competence.value}/7
+                    </strong>
+
+                  </div>
+
+                )
+              )}
+
+            </div>
+
+          </div>
+
+
+          {/* ======================================
+              NOTA
+             ====================================== */}
+
+          <div className="step-result-note">
+
+            Questo riepilogo non assegna
+            un indirizzo.
+
+            Serve a mettere in relazione
+            ciò che cerchi nel tuo futuro
+            lavoro con le competenze che
+            riconosci in te stesso.
+
+          </div>
+
+
+          <div className="navigation-buttons">
+
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={() => {
+
+                setCurrentWorkReflection(
+                  workReflectionQuestions.length - 1
+                )
+
+                setCurrentSection(
+                  'work-reflection'
+                )
+
+              }}
+            >
+              Indietro
+            </button>
+
+
+            <button
+              type="button"
+              className="primary-button"
+              disabled
+            >
+              Continua al Passo 3
+            </button>
+
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+  )
+}
 
 
   // ==================================================
