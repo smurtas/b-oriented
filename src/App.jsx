@@ -515,7 +515,7 @@ function App() {
       <div className="brand-header brand-header-page">
 
         <img
-    src={`${import.meta.env.BASE_URL}Buonarroti_Icona.jpg`}
+          src={`${import.meta.env.BASE_URL}Buonarroti_Icona.jpg`}
           alt="ITT Buonarroti Trento"
           className="school-logo"
         />
@@ -719,61 +719,42 @@ function App() {
 
           <div className="home-content">
 
-            <div className="home-badge">
-              ORIENTAMENTO
-            </div>
-            <div className="brand-header">
-              <img
-    src={`${import.meta.env.BASE_URL}Buonarroti_Icona.jpg`}
-                alt="ITT Buonarroti Trento"
-                className="school-logo"
-              />
-
-              <div className="brand-name">
-                B-oriented
+            <div className="home-topbar">
+              <div className="home-topbar-brand">
+                <img
+                  src={`${import.meta.env.BASE_URL}logo_Buonarroti.png`}
+                  alt="ITT Buonarroti Trento"
+                  className="home-topbar-logo"
+                />
+                <div className="home-topbar-title">B-oriented</div>
               </div>
             </div>
 
-            <h1>
-              4 PASSI NEL FUTURO
-            </h1>
+            <div className="home-inner">
+              <div className="home-badge">ORIENTAMENTO</div>
 
-            <h2>
-              Questionario di orientamento
-            </h2>
+              <h1>4 PASSI NEL FUTURO</h1>
+              <h2>Questionario di orientamento</h2>
 
-            <p className="home-description">
+              <p className="home-description">
+                Un percorso per aiutarti a riflettere sui tuoi interessi, sulle tue capacità
+                e sulla scelta dell'indirizzo di studio.
+              </p>
 
-              Un percorso per aiutarti
-              a riflettere sui tuoi
-              interessi, sulle tue
-              capacità e sulla scelta
-              dell'indirizzo di studio.
+              <div className="steps-overview">
+                ...
+              </div>
 
-            </p>
-      
-
-            <StepsOverview />
-
-
-            <button
-              className="primary-button"
-              onClick={() => {
-
-                setCurrentSection(
-                  'intro-areas'
-                )
-
-                setPage(
-                  'questionnaire'
-                )
-
-              }}
-            >
-
-              Inizia il questionario
-
-            </button>
+              <button
+                className="primary-button"
+                onClick={() => {
+                  setCurrentSection('intro-areas')
+                  setPage('questionnaire')
+                }}
+              >
+                Inizia il questionario
+              </button>
+            </div>
 
           </div>
 
