@@ -163,6 +163,20 @@ function App() {
 
   const [currentChoiceQuestion, setCurrentChoiceQuestion] = useState(0)
 
+  // ==================================================
+  // PROGRESS BAR GENERICA 
+  // ==================================================
+
+  const [areasRankingCompleted, setAreasRankingCompleted] = useState(false)
+
+  const [workRankingCompleted, setWorkRankingCompleted] = useState(false)
+
+  // ==================================================
+  // DRAG AND DROP 
+  // ==================================================
+  const [draggedRankingIndex, setDraggedRankingIndex] = useState(null)
+
+  const [draggedWorkRankingIndex, setDraggedWorkRankingIndex] = useState(null)
 
   // ==================================================
   // CARICAMENTO DOMANDE
@@ -524,7 +538,6 @@ function App() {
 
   }
 
-
   // ==================================================
   // SPOSTA AREA VERSO IL BASSO
   // ==================================================
@@ -560,6 +573,33 @@ function App() {
       movedItem.id
     )
 
+  }
+
+  // ==================================================
+  // REORDER
+  // ==================================================
+
+  function reorderItems(
+    list,
+    fromIndex,
+    toIndex
+  ) {
+
+    const updated = [...list]
+
+    const [movedItem] =
+      updated.splice(
+        fromIndex,
+        1
+      )
+
+    updated.splice(
+      toIndex,
+      0,
+      movedItem
+    )
+
+    return updated
   }
 
   // ==================================================
@@ -789,31 +829,18 @@ function App() {
       }
 
 
-      const data =
-        await response.json()
-
+      const data = await response.json()
 
       setResult(data)
-
-      setCurrentSection(
-        'step1-results'
-      )
-
+      setCurrentSection('step1-results')
       window.scrollTo({
         top: 0,
         behavior: 'smooth'
       })
-
     }
-
     catch (error) {
-
       console.error(error)
-
-      alert(
-        'Errore durante il calcolo del risultato.'
-      )
-
+      alert('Errore durante il calcolo del risultato.')
     }
 
   }
@@ -830,21 +857,16 @@ function App() {
     // ==============================================
 
     setAnswers({})
-
     setReflectionAnswers({})
-
     setCurrentQuestion(0)
-
     setCurrentReflection(0)
-
     setRanking(
       [...rankingQuestions]
     )
 
     setHighlightedRankingId(null)
-
+    setAreasRankingCompleted(false)
     setResult(null)
-
 
     // ==============================================
     // PASSO 2
@@ -855,14 +877,11 @@ function App() {
     )
 
     setWorkAnswers({})
-
     setWorkReflectionAnswers({})
-
     setCurrentWorkCompetence(0)
-
     setCurrentWorkReflection(0)
-
     setHighlightedWorkRankingId(null)
+    setWorkRankingCompleted(false)
 
 
     // ==============================================
@@ -870,32 +889,22 @@ function App() {
     // ==============================================
 
     setStudyAnswers({})
-
     setCurrentStudyQuestion(0)
-
 
     // ==============================================
     // PASSO 4
     // ==============================================
 
     setSelectedTrack('')
-
     setChoiceAnswers({})
-
     setCurrentChoiceQuestion(0)
-
 
     // ==============================================
     // TORNA ALL'INIZIO
     // ==============================================
 
-    setCurrentSection(
-      'intro-areas'
-    )
-
-    setPage(
-      'questionnaire'
-    )
+    setCurrentSection('intro-areas')
+    setPage('questionnaire')
 
     window.scrollTo({
       top: 0,
@@ -922,6 +931,126 @@ function App() {
     )
 
   }
+  // ==================================================
+  // PROGRESSO COMPLESSIVO DEL QUESTIONARIO
+  // ==================================================
+
+  function getOverallProgress() {
+
+    const completedInterests =
+      interestQuestions.filter(
+        question =>
+          answers[question.id] !== undefined
+      ).length
+
+    const completedReflections =
+      reflectionQuestions.filter(
+        question =>
+          reflectionAnswers[
+            question.id
+          ]?.trim()
+      ).length
+
+    const completedWorkCompetences =
+      workCompetenceQuestions.filter(
+        question =>
+          workAnswers[
+          question.id
+          ] !== undefined
+      ).length
+
+    const completedWorkReflections =
+      workReflectionQuestions.filter(
+        question =>
+          workReflectionAnswers[
+            question.id
+          ]?.trim()
+      ).length
+
+    const completedStudy =
+      [
+        ...studyHomeQuestions,
+        ...studyLessonQuestions,
+        ...studyOralQuestions,
+        ...studyGroupQuestions
+      ].filter(
+        question =>
+          studyAnswers[
+          question.id
+          ] !== undefined
+      ).length
+
+    const completedChoiceTexts =
+      [
+        ...choiceMotivationQuestions,
+        ...choiceStrengthQuestions,
+        ...choiceProsConsQuestions
+      ].filter(
+        question =>
+          choiceAnswers[
+            question.id
+          ]?.trim()
+      ).length
+
+
+    const completed =
+      (areasRankingCompleted ? 1 : 0) +
+
+      completedInterests +
+
+      completedReflections +
+
+      (workRankingCompleted ? 1 : 0) +
+
+      completedWorkCompetences +
+
+      completedWorkReflections +
+
+      completedStudy +
+
+      (selectedTrack ? 1 : 0) +
+
+      completedChoiceTexts
+
+
+    const total =
+      1 + // ranking aree
+
+      interestQuestions.length +
+
+      reflectionQuestions.length +
+
+      1 + // ranking lavoro
+
+      workCompetenceQuestions.length +
+
+      workReflectionQuestions.length +
+
+      studyHomeQuestions.length +
+
+      studyLessonQuestions.length +
+
+      studyOralQuestions.length +
+
+      studyGroupQuestions.length +
+
+      1 + // scelta indirizzo
+
+      choiceMotivationQuestions.length +
+
+      choiceStrengthQuestions.length +
+
+      choiceProsConsQuestions.length
+
+
+    if (total === 0) {
+      return 0
+    }
+
+    return Math.round(
+      (completed / total) * 100
+    )
+  }
 
   // ==================================================
   // PANORAMICA DEI 4 PASSI
@@ -947,51 +1076,88 @@ function App() {
       }
     ]
 
+    const overallProgress = getOverallProgress()
 
     return (
 
-      <div className="steps-overview">
+      <>
 
-        {steps.map(step => {
+        <div className="steps-overview">
 
-          const isActive =
-            step.number === activeStep
+          {steps.map(step => {
 
-          const isCompleted =
-            step.number < activeStep
+            const isActive =
+              step.number === activeStep
 
-          return (
+            const isCompleted =
+              step.number < activeStep
+
+            return (
+
+              <div
+                key={step.number}
+                className={
+                  isActive
+                    ? 'step-item active'
+                    : isCompleted
+                      ? 'step-item completed'
+                      : 'step-item'
+                }
+              >
+
+                <div className="step-number">
+
+                  {isCompleted
+                    ? '✓'
+                    : step.number}
+
+                </div>
+
+                <div className="step-title">
+                  {step.title}
+                </div>
+
+              </div>
+
+            )
+
+          })}
+
+        </div>
+
+
+        {/* PROGRESSO GENERALE */}
+
+        <div className="overall-progress">
+
+          <div className="overall-progress-header">
+
+            <span>
+              Avanzamento del percorso
+            </span>
+
+            <strong>
+              {overallProgress}%
+            </strong>
+
+          </div>
+
+
+          <div className="overall-progress-track">
 
             <div
-              key={step.number}
-              className={
-                isActive
-                  ? 'step-item active'
-                  : isCompleted
-                    ? 'step-item completed'
-                    : 'step-item'
-              }
-            >
+              className="overall-progress-fill"
+              style={{
+                width:
+                  `${overallProgress}%`
+              }}
+            />
 
-              <div className="step-number">
+          </div>
 
-                {isCompleted
-                  ? '✓'
-                  : step.number}
+        </div>
 
-              </div>
-
-              <div className="step-title">
-                {step.title}
-              </div>
-
-            </div>
-
-          )
-
-        })}
-
-      </div>
+      </>
 
     )
   }
@@ -1303,9 +1469,47 @@ function App() {
                           ? 'ranking-item ranking-item-highlighted'
                           : 'ranking-item'
                       }
+                      draggable
+
+                      onDragStart={() => {
+                        setDraggedRankingIndex(index)
+                      }}
+
+                      onDragOver={event => {
+                        event.preventDefault()
+                      }}
+
+                      onDrop={() => {
+
+                        if (
+                          draggedRankingIndex === null ||
+                          draggedRankingIndex === index
+                        ) {
+                          return
+                        }
+
+                        const newRanking =
+                          reorderItems(
+                            ranking,
+                            draggedRankingIndex,
+                            index
+                          )
+
+                        setRanking(newRanking)
+
+                        setDraggedRankingIndex(null)
+                      }}
+
+                      onDragEnd={() => {
+                        setDraggedRankingIndex(null)
+                      }}
                     >
 
                       <div className="ranking-main">
+
+                        <div className="ranking-drag-handle">
+                          ⋮⋮
+                        </div>
 
                         <div className="ranking-position">
 
@@ -1397,6 +1601,8 @@ function App() {
                 <button
                   className="primary-button"
                   onClick={() => {
+
+                    setAreasRankingCompleted(true)
 
                     setCurrentSection(
                       'intro-interests'
@@ -2413,9 +2619,46 @@ function App() {
                         ? 'ranking-item ranking-item-highlighted'
                         : 'ranking-item'
                     }
+                    draggable
+
+                    onDragStart={() => {
+                      setDraggedRankingIndex(index)
+                    }}
+
+                    onDragOver={event => {
+                      event.preventDefault()
+                    }}
+
+                    onDrop={() => {
+
+                      if (
+                        draggedRankingIndex === null ||
+                        draggedRankingIndex === index
+                      ) {
+                        return
+                      }
+
+                      const newRanking =
+                        reorderItems(
+                          ranking,
+                          draggedRankingIndex,
+                          index
+                        )
+
+                      setRanking(newRanking)
+
+                      setDraggedRankingIndex(null)
+                    }}
+
+                    onDragEnd={() => {
+                      setDraggedRankingIndex(null)
+                    }}
                   >
 
                     <div className="ranking-main">
+                      <div className="ranking-drag-handle">
+                        ⋮⋮
+                      </div>
 
                       <div className="ranking-position">
                         {index + 1}
@@ -2493,6 +2736,7 @@ function App() {
                 type="button"
                 className="primary-button"
                 onClick={() => {
+                  setWorkRankingCompleted(true)
 
                   setCurrentSection(
                     'intro-work-competences'
@@ -6239,7 +6483,7 @@ function App() {
       </div>
 
     )
-  
+
 
   }
 
