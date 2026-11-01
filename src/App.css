@@ -760,10 +760,7 @@ button {
 .likert-scale {
     display: grid;
 
-    grid-template-columns:
-        repeat(5, 1fr);
-
-    gap: 12px;
+    gap: 10px;
 
     margin-top: 28px;
 }
@@ -775,10 +772,9 @@ button {
     border-radius: 5px;
 
     background: #ffffff;
-
     color: #243447;
 
-    font-size: 19px;
+    font-size: 18px;
     font-weight: 700;
 
     cursor: pointer;
@@ -1412,7 +1408,8 @@ button {
     }
 
     .likert-scale {
-        gap: 6px;
+        grid-template-columns:
+            repeat(4, 1fr) !important;
     }
 
     .likert-button {
@@ -1477,4 +1474,10 @@ button {
         transition-duration: 0.01ms !important;
     }
 
+}
+
+.likert-scale {
+    display: grid;
+    gap: 12px;
+    margin-top: 28px;
 }

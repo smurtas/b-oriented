@@ -24,3 +24,23 @@ textarea,
 select {
   font: inherit;
 }
+
+.work-choice-reminder {
+    margin: 20px 0 8px;
+
+    padding: 14px 16px;
+
+    background: #edf4fc;
+
+    border-left: 4px solid #173b67;
+    border-radius: 4px;
+
+    color: #344054;
+
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.work-choice-reminder strong {
+    color: #173b67;
+}

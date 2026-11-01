@@ -43,6 +43,29 @@ const sectionInfo = {
     title: 'Riflessione',
     description:
       'Rifletti sulle preferenze che hai espresso.'
+  },
+  work: {
+    step: 'PASSO 2 DI 4',
+    section: 'SEZIONE 2A',
+    title: 'Nel lavoro vorrei trovare...',
+    description:
+      'Ordina le caratteristiche del lavoro in base a quanto sono importanti per te.'
+  },
+
+  competences: {
+    step: 'PASSO 2 DI 4',
+    section: 'SEZIONE 2B',
+    title: 'Competenze per il lavoro',
+    description:
+      'Valuta quanto pensi di possedere ciascuna delle competenze proposte.'
+  },
+
+  workReflection: {
+    step: 'PASSO 2 DI 4',
+    section: 'SEZIONE 2C',
+    title: 'Riflessione',
+    description:
+      'Collega ciò che cerchi nel lavoro alle competenze che ritieni di possedere.'
   }
 
 }
@@ -58,72 +81,70 @@ function App() {
   // STATO PRINCIPALE
   // ==================================================
 
-  const [page, setPage] =
-    useState('home')
+  const [page, setPage] = useState('home')
 
-  const [questions, setQuestions] =
-    useState([])
+  const [questions, setQuestions] = useState([])
 
-  const [loading, setLoading] =
-    useState(true)
+  const [loading, setLoading] = useState(true)
 
-  const [error, setError] =
-    useState(null)
+  const [error, setError] = useState(null)
 
 
   // ==================================================
   // SEZIONE CORRENTE
   // ==================================================
 
-  const [currentSection, setCurrentSection] =
-    useState('intro-areas')
+  const [currentSection, setCurrentSection] = useState('intro-areas')
 
 
   // ==================================================
   // DOMANDE LIKERT
   // ==================================================
 
-  const [currentQuestion, setCurrentQuestion] =
-    useState(0)
+  const [currentQuestion, setCurrentQuestion] = useState(0)
 
-  const [answers, setAnswers] =
-    useState({})
+  const [answers, setAnswers] = useState({})
 
 
   // ==================================================
   // RANKING AREE PROFESSIONALI
   // ==================================================
 
-  const [ranking, setRanking] =
-    useState([])
+  const [ranking, setRanking] = useState([])
 
-  const [
-    highlightedRankingId,
-    setHighlightedRankingId
-  ] = useState(null)
+  const [highlightedRankingId, setHighlightedRankingId] = useState(null)
 
 
   // ==================================================
   // RIFLESSIONI
   // ==================================================
 
-  const [
-    reflectionAnswers,
-    setReflectionAnswers
-  ] = useState({})
+  const [reflectionAnswers, setReflectionAnswers] = useState({})
 
-  const [
-    currentReflection,
-    setCurrentReflection
-  ] = useState(0)
+  const [currentReflection, setCurrentReflection] = useState(0)
 
 
   // ==================================================
   // RISULTATO
   // ==================================================
 
-  const [result, setResult] =
-    useState(null)
+  const [result, setResult] = useState(null)
+
+  // ==================================================
+  // PASSO 2 - LAVORO
+  // ==================================================
+
+  const [workRanking, setWorkRanking] = useState([])
+
+  const [currentWorkCompetence, setCurrentWorkCompetence] = useState(0)
+
+  const [workAnswers, setWorkAnswers] = useState({})
+
+  const [workReflectionAnswers, setWorkReflectionAnswers] = useState({})
+
+  const [currentWorkReflection, setCurrentWorkReflection] = useState(0)
+
+  const [highlightedWorkRankingId, setHighlightedWorkRankingId] = useState(null)
 
 
   // ==================================================
@@ -239,7 +260,46 @@ function App() {
           a.ordine - b.ordine
       )
 
+  const workRankingQuestions =
+    questions
+      .filter(
+        question =>
+          question.step === 2 &&
+          question.section === 'caratteristiche_lavoro' &&
+          question.type === 'ranking'
+      )
+      .sort(
+        (a, b) =>
+          a.ordine - b.ordine
+      )
 
+
+  const workCompetenceQuestions =
+    questions
+      .filter(
+        question =>
+          question.step === 2 &&
+          question.section === 'competenze_lavoro' &&
+          question.type === 'likert'
+      )
+      .sort(
+        (a, b) =>
+          a.ordine - b.ordine
+      )
+
+
+  const workReflectionQuestions =
+    questions
+      .filter(
+        question =>
+          question.step === 2 &&
+          question.section === 'riflessione_lavoro' &&
+          question.type === 'text'
+      )
+      .sort(
+        (a, b) =>
+          a.ordine - b.ordine
+      )
   // ==================================================
   // INIZIALIZZIAMO IL RANKING
   // ==================================================
@@ -263,6 +323,48 @@ function App() {
     ranking.length
   ])
 
+  useEffect(() => {
+
+    if (
+      workRankingQuestions.length > 0 &&
+      workRanking.length === 0
+    ) {
+
+      setWorkRanking(
+        [...workRankingQuestions]
+      )
+
+    }
+
+  }, [
+    questions,
+    workRankingQuestions.length,
+    workRanking.length
+  ])
+
+  // ==================================================
+  // INIZIALIZZO RANKING DEI 14 ASPETTI
+  // 
+
+
+  useEffect(() => {
+
+    if (
+      workRankingQuestions.length > 0 &&
+      workRanking.length === 0
+    ) {
+
+      setWorkRanking(
+        [...workRankingQuestions]
+      )
+
+    }
+
+  }, [
+    questions,
+    workRankingQuestions.length,
+    workRanking.length
+  ])
 
   // ==================================================
   // SPOSTA AREA VERSO L'ALTO
@@ -336,6 +438,72 @@ function App() {
 
   }
 
+  // ==================================================
+  // SPOSTA SPOSTAMENTO LAVORI 
+  // ==================================================
+
+  function moveWorkRankingUp(index) {
+
+    if (index === 0) {
+      return
+    }
+
+    const newRanking =
+      [...workRanking]
+
+    const movedItem =
+      newRanking[index]
+
+    newRanking[index] =
+      newRanking[index - 1]
+
+    newRanking[index - 1] =
+      movedItem
+
+    setWorkRanking(newRanking)
+
+    setHighlightedWorkRankingId(
+      movedItem.id
+    )
+
+    setTimeout(() => {
+      setHighlightedWorkRankingId(null)
+    }, 500)
+  }
+
+
+  function moveWorkRankingDown(index) {
+
+    if (
+      index ===
+      workRanking.length - 1
+    ) {
+      return
+    }
+
+    const newRanking =
+      [...workRanking]
+
+    const movedItem =
+      newRanking[index]
+
+    newRanking[index] =
+      newRanking[index + 1]
+
+    newRanking[index + 1] =
+      movedItem
+
+    setWorkRanking(newRanking)
+
+    setHighlightedWorkRankingId(
+      movedItem.id
+    )
+
+    setTimeout(() => {
+      setHighlightedWorkRankingId(null)
+    }, 500)
+  }
+
 
   // ==================================================
   // EVIDENZIA ELEMENTO SPOSTATO
@@ -373,7 +541,32 @@ function App() {
 
   }
 
+  function selectWorkAnswer(
+    questionId,
+    value
+  ) {
 
+    setWorkAnswers(
+      previous => ({
+        ...previous,
+        [questionId]: value
+      })
+    )
+  }
+
+
+  function updateWorkReflection(
+    questionId,
+    value
+  ) {
+
+    setWorkReflectionAnswers(
+      previous => ({
+        ...previous,
+        [questionId]: value
+      })
+    )
+  }
   // ==================================================
   // RISPOSTA TESTUALE
   // ==================================================
@@ -532,35 +725,25 @@ function App() {
   // ==================================================
   // PANORAMICA DEI 4 PASSI
   // ==================================================
-
-  function StepsOverview() {
+  function StepsOverview({ activeStep = 1 }) {
 
     const steps = [
-
       {
         number: 1,
-        title: 'Interessi',
-        active: true
+        title: 'Interessi'
       },
-
       {
         number: 2,
-        title: 'Lavoro',
-        active: false
+        title: 'Lavoro'
       },
-
       {
         number: 3,
-        title: 'Metodo di studio',
-        active: false
+        title: 'Metodo di studio'
       },
-
       {
         number: 4,
-        title: 'Scelta',
-        active: false
+        title: 'Scelta'
       }
-
     ]
 
 
@@ -568,33 +751,48 @@ function App() {
 
       <div className="steps-overview">
 
-        {steps.map(step => (
+        {steps.map(step => {
 
-          <div
-            key={step.number}
-            className={
-              step.active
-                ? 'step-item active'
-                : 'step-item'
-            }
-          >
+          const isActive =
+            step.number === activeStep
 
-            <div className="step-number">
-              {step.number}
+          const isCompleted =
+            step.number < activeStep
+
+          return (
+
+            <div
+              key={step.number}
+              className={
+                isActive
+                  ? 'step-item active'
+                  : isCompleted
+                    ? 'step-item completed'
+                    : 'step-item'
+              }
+            >
+
+              <div className="step-number">
+
+                {isCompleted
+                  ? '✓'
+                  : step.number}
+
+              </div>
+
+              <div className="step-title">
+                {step.title}
+              </div>
+
             </div>
 
-            <div className="step-title">
-              {step.title}
-            </div>
+          )
 
-          </div>
-
-        ))}
+        })}
 
       </div>
 
     )
-
   }
 
 
@@ -1248,8 +1446,12 @@ function App() {
               </p>
 
 
-              <div className="likert-scale">
-
+              <div
+                className="likert-scale"
+                style={{
+                  gridTemplateColumns: `repeat(${values.length}, 1fr)`
+                }}
+              >
                 {values.map(
                   value => (
 
@@ -1631,8 +1833,14 @@ function App() {
 
                     else {
 
-                      submitResults()
+                      setCurrentSection(
+                        'intro-work'
+                      )
 
+                      window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                      })
                     }
 
                   }}
@@ -1660,6 +1868,877 @@ function App() {
 
     }
 
+  }
+
+  // ============================
+  // SEZIONE INTRO-WORK 
+  // ============================
+
+  if (
+    currentSection === 'intro-work'
+  ) {
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={2}
+          />
+
+          <div className="transition-card">
+
+            <div className="transition-label">
+              PASSO 2 · SEZIONE 2A
+            </div>
+
+            <h1>
+              Nel lavoro vorrei trovare...
+            </h1>
+
+            <p>
+              Il lavoro non è fatto soltanto
+              dalle attività che svolgiamo.
+            </p>
+
+            <p>
+              Pensa alle caratteristiche che
+              vorresti trovare nel tuo futuro
+              lavoro e ordinala in base alla
+              loro importanza.
+            </p>
+
+            <button
+              type="button"
+              className="primary-button"
+              onClick={() =>
+                setCurrentSection(
+                  'work-ranking'
+                )
+              }
+            >
+              Continua
+            </button>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  }
+  // ============================
+  // SEZIONE WORK RANKING
+  // ============================
+
+  if (
+    currentSection ===
+    'work-ranking'
+  ) {
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={2}
+          />
+
+          <SectionHeader
+            section="work"
+          />
+
+
+          <div className="question-card">
+
+            <h2>
+              Cosa è importante
+              nel tuo futuro lavoro?
+            </h2>
+
+            <p className="answer-instruction">
+
+              Ordina le 14 caratteristiche.
+
+              La posizione 1 rappresenta
+              quella più importante per te,
+              mentre la posizione 14
+              quella meno importante.
+
+            </p>
+
+
+            <div className="ranking-list">
+
+              {workRanking.map(
+                (
+                  item,
+                  index
+                ) => (
+
+                  <div
+                    key={item.id}
+                    className={
+                      highlightedWorkRankingId ===
+                        item.id
+                        ? 'ranking-item ranking-item-highlighted'
+                        : 'ranking-item'
+                    }
+                  >
+
+                    <div className="ranking-main">
+
+                      <div className="ranking-position">
+                        {index + 1}
+                      </div>
+
+                      <div className="ranking-text">
+                        {item.domanda}
+                      </div>
+
+                    </div>
+
+
+                    <div className="ranking-buttons">
+
+                      <button
+                        type="button"
+                        className="ranking-arrow"
+                        onClick={() =>
+                          moveWorkRankingUp(
+                            index
+                          )
+                        }
+                        disabled={
+                          index === 0
+                        }
+                        aria-label="Sposta verso l'alto"
+                      >
+                        ↑
+                      </button>
+
+
+                      <button
+                        type="button"
+                        className="ranking-arrow"
+                        onClick={() =>
+                          moveWorkRankingDown(
+                            index
+                          )
+                        }
+                        disabled={
+                          index ===
+                          workRanking.length - 1
+                        }
+                        aria-label="Sposta verso il basso"
+                      >
+                        ↓
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                )
+              )}
+
+            </div>
+
+
+            <div className="navigation-buttons">
+
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() =>
+                  setCurrentSection(
+                    'intro-work'
+                  )
+                }
+              >
+                Indietro
+              </button>
+
+
+              <button
+                type="button"
+                className="primary-button"
+                onClick={() => {
+
+                  setCurrentSection(
+                    'intro-work-competences'
+                  )
+
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                  })
+
+                }}
+              >
+                Continua
+              </button>
+
+            </div>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  }
+  // ============================
+  // SEZIONE INTRO-WORK COMPETENCES
+  // ============================
+
+  if (
+    currentSection ===
+    'intro-work-competences'
+  ) {
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={2}
+          />
+
+          <div className="transition-card">
+
+            <div className="transition-label">
+              PASSO 2 · SEZIONE 2B
+            </div>
+
+            <h1>
+              Le mie competenze
+            </h1>
+
+            <p>
+              Ora pensa a ciò che sai fare
+              e alle caratteristiche che
+              possiedi.
+            </p>
+
+            <p>
+              Per ogni competenza indica
+              quanto pensi di possederla,
+              utilizzando una scala da
+              1 a 7.
+            </p>
+
+            <button
+              type="button"
+              className="primary-button"
+              onClick={() => {
+
+                setCurrentWorkCompetence(0)
+
+                setCurrentSection(
+                  'work-competences'
+                )
+
+              }}
+            >
+              Continua
+            </button>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  }
+
+  // ============================
+  // SEZIONE WORK COMPETENCES
+  // ============================
+
+  if (
+    currentSection ===
+    'work-competences'
+  ) {
+
+    const question =
+      workCompetenceQuestions[
+      currentWorkCompetence
+      ]
+
+
+    if (!question) {
+      return null
+    }
+
+
+    const min =
+      question.min || 1
+
+    const max =
+      question.max || 7
+
+
+    const values =
+      Array.from(
+        {
+          length:
+            max - min + 1
+        },
+        (_, index) =>
+          min + index
+      )
+
+
+    const progress =
+      Math.round(
+        (
+          (
+            currentWorkCompetence +
+            1
+          ) /
+          workCompetenceQuestions.length
+        ) *
+        100
+      )
+
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={2}
+          />
+
+          <SectionHeader
+            section="competences"
+          />
+
+
+          <div className="question-progress">
+
+            <div className="progress-label">
+
+              COMPETENZA {
+                currentWorkCompetence + 1
+              } / {
+                workCompetenceQuestions.length
+              }
+
+            </div>
+
+            <div className="progress-percentage">
+              {progress}%
+            </div>
+
+          </div>
+
+
+          <div className="progress-bar">
+
+            <div
+              className="progress-bar-fill"
+              style={{
+                width: `${progress}%`
+              }}
+            />
+
+          </div>
+
+
+          <div className="question-card">
+
+            <h2>
+              {question.domanda}
+            </h2>
+
+
+            <p className="answer-instruction">
+
+              Quanto pensi di possedere
+              questa competenza?
+
+            </p>
+
+
+            <div
+              className="likert-scale"
+              style={{
+                gridTemplateColumns: `repeat(${values.length}, 1fr)`
+              }}
+            >
+              {values.map(value => (
+
+                <button
+                  type="button"
+                  key={value}
+                  className={
+                    workAnswers[
+                      question.id
+                    ] === value
+                      ? 'likert-button selected'
+                      : 'likert-button'
+                  }
+                  onClick={() =>
+                    selectWorkAnswer(
+                      question.id,
+                      value
+                    )
+                  }
+                >
+                  {value}
+                </button>
+
+              ))}
+
+            </div>
+
+
+            <div className="likert-labels">
+
+              <span>
+                Per niente
+              </span>
+
+              <span>
+                Del tutto
+              </span>
+
+            </div>
+
+
+            <div className="navigation-buttons">
+
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => {
+
+                  if (
+                    currentWorkCompetence >
+                    0
+                  ) {
+
+                    setCurrentWorkCompetence(
+                      currentWorkCompetence - 1
+                    )
+
+                  } else {
+
+                    setCurrentSection(
+                      'intro-work-competences'
+                    )
+
+                  }
+
+                }}
+              >
+                Indietro
+              </button>
+
+
+              <button
+                type="button"
+                className="primary-button"
+                disabled={
+                  !workAnswers[
+                  question.id
+                  ]
+                }
+                onClick={() => {
+
+                  if (
+                    currentWorkCompetence <
+                    workCompetenceQuestions.length -
+                    1
+                  ) {
+
+                    setCurrentWorkCompetence(
+                      currentWorkCompetence + 1
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  } else {
+
+                    setCurrentSection(
+                      'intro-work-reflection'
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  }
+
+                }}
+              >
+
+                {
+                  currentWorkCompetence ===
+                    workCompetenceQuestions.length -
+                    1
+                    ? 'Continua'
+                    : 'Avanti'
+                }
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  }
+
+  // ============================
+  // SEZIONE INTRO-WORK REFLECTIONS
+  // ============================
+
+  if (
+    currentSection ===
+    'intro-work-reflection'
+  ) {
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={2}
+          />
+
+          <div className="transition-card">
+
+            <div className="transition-label">
+              PASSO 2 · SEZIONE 2C
+            </div>
+
+            <h1>
+              Metti insieme
+              le tue risposte
+            </h1>
+
+            <p>
+              Hai indicato cosa vorresti
+              trovare nel tuo futuro lavoro
+              e quali competenze pensi
+              di possedere.
+            </p>
+
+            <p>
+              Ora prova a collegare
+              questi due aspetti.
+            </p>
+
+            <button
+              type="button"
+              className="primary-button"
+              onClick={() => {
+
+                setCurrentWorkReflection(
+                  0
+                )
+
+                setCurrentSection(
+                  'work-reflection'
+                )
+
+              }}
+            >
+              Continua
+            </button>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  }
+
+  // ============================
+  // SEZIONE WORK REFLECTIONS
+  // ============================
+
+  if (
+    currentSection ===
+    'work-reflection'
+  ) {
+
+    const question =
+      workReflectionQuestions[
+      currentWorkReflection
+      ]
+
+
+    if (!question) {
+      return null
+    }
+
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={2}
+          />
+
+          <SectionHeader
+            section="workReflection"
+          />
+
+
+          <div className="question-progress">
+
+            <div className="progress-label">
+
+              RIFLESSIONE {
+                currentWorkReflection + 1
+              } / {
+                workReflectionQuestions.length
+              }
+
+            </div>
+
+          </div>
+
+
+          <div className="question-card">
+
+            <h2>
+              {question.domanda}
+            </h2>
+
+
+            {workRanking[
+              currentWorkReflection
+            ] && (
+
+                <div className="work-choice-reminder">
+
+                  <strong>
+                    {
+                      currentWorkReflection === 0
+                        ? '1ª caratteristica: '
+                        : '2ª caratteristica: '
+                    }
+                  </strong>
+
+                  {
+                    workRanking[
+                      currentWorkReflection
+                    ].domanda
+                  }
+
+                </div>
+
+              )}
+
+
+            <textarea
+              className="reflection-textarea"
+              value={
+                workReflectionAnswers[
+                question.id
+                ] || ''
+              }
+              onChange={event =>
+                updateWorkReflection(
+                  question.id,
+                  event.target.value
+                )
+              }
+              placeholder="Scrivi qui la tua riflessione..."
+            />
+
+
+            <div className="navigation-buttons">
+
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => {
+
+                  if (
+                    currentWorkReflection >
+                    0
+                  ) {
+
+                    setCurrentWorkReflection(
+                      currentWorkReflection - 1
+                    )
+
+                  } else {
+
+                    setCurrentSection(
+                      'intro-work-reflection'
+                    )
+
+                  }
+
+                }}
+              >
+                Indietro
+              </button>
+
+
+              <button
+                type="button"
+                className="primary-button"
+                disabled={
+                  !workReflectionAnswers[
+                    question.id
+                  ]?.trim()
+                }
+                onClick={() => {
+
+                  if (
+                    currentWorkReflection <
+                    workReflectionQuestions.length -
+                    1
+                  ) {
+
+                    setCurrentWorkReflection(
+                      currentWorkReflection + 1
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  } else {
+
+                    /*
+                     * PASSO 2 COMPLETATO.
+                     *
+                     * Per ora non abbiamo
+                     * ancora implementato
+                     * il Passo 3.
+                     */
+
+                    setCurrentSection(
+                      'work-completed'
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  }
+
+                }}
+              >
+
+                {
+                  currentWorkReflection ===
+                    workReflectionQuestions.length -
+                    1
+                    ? 'Completa il Passo 2'
+                    : 'Avanti'
+                }
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  }
+
+  //
+  // PROVVISORIO
+  //
+
+  if (
+    currentSection ===
+    'work-completed'
+  ) {
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={2}
+          />
+
+          <div className="transition-card">
+
+            <div className="transition-label">
+              PASSO 2 COMPLETATO
+            </div>
+
+            <h1>
+              Lavoro completato
+            </h1>
+
+            <p>
+              Hai completato anche
+              la seconda parte del percorso.
+            </p>
+
+            <p>
+              Il prossimo passo sarà dedicato
+              al tuo metodo di studio.
+            </p>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
   }
 
 
