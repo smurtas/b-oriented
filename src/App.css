@@ -1292,11 +1292,28 @@ button {
         font-size: 15px;
     }
 
-    .ranking-buttons {
-        flex-direction: column;
+@media (max-width: 700px) {
 
-        gap: 6px;
+    .ranking-buttons {
+        grid-area: buttons;
+
+        display: flex;
+        flex-direction: row;
+
+        justify-content: flex-end;
+        align-items: center;
+
+        gap: 10px;
+
+        width: 100%;
     }
+
+    .ranking-arrow {
+        width: 44px;
+        height: 40px;
+    }
+
+}
 
     .ranking-arrow {
         width: 38px;
@@ -2643,5 +2660,120 @@ button {
 }
 
 .ranking-item-dragging {
-    opacity: 0.45;
+    opacity: 0.65;
+
+    border: 2px solid #173b67;
+
+    background: #edf4fc;
+
+    box-shadow:
+        0 8px 20px
+        rgba(23, 59, 103, 0.18);
+
+    transform: scale(0.99);
+}
+
+/* ======================================================
+   RANKING - MOBILE
+   ====================================================== */
+
+@media (max-width: 700px) {
+
+    .ranking-item {
+        display: grid;
+
+        grid-template-columns:
+            32px
+            46px
+            1fr;
+
+        grid-template-areas:
+            "drag number text"
+            ".    buttons buttons";
+
+        column-gap: 12px;
+        row-gap: 14px;
+
+        align-items: center;
+
+        padding: 16px;
+
+        width: 100%;
+    }
+
+
+    .ranking-main {
+        display: contents;
+    }
+
+
+    .ranking-drag-handle {
+        grid-area: drag;
+
+        width: 32px;
+        height: 46px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 24px;
+
+        cursor: grab;
+    }
+
+
+    .ranking-position {
+        grid-area: number;
+
+        width: 46px;
+        height: 46px;
+
+        flex: none;
+    }
+
+
+    .ranking-text {
+        grid-area: text;
+
+        width: auto;
+        min-width: 0;
+
+        font-size: 16px;
+        line-height: 1.45;
+
+        word-break: normal;
+        overflow-wrap: break-word;
+    }
+
+
+@media (max-width: 700px) {
+
+    .ranking-buttons {
+        grid-area: buttons;
+
+        display: flex;
+        flex-direction: row;
+
+        justify-content: flex-end;
+        align-items: center;
+
+        gap: 10px;
+
+        width: 100%;
+    }
+
+    .ranking-arrow {
+        width: 44px;
+        height: 40px;
+    }
+
+}
+
+
+    .ranking-arrow {
+        width: 44px;
+        height: 40px;
+    }
+
 }

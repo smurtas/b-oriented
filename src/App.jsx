@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react'
+import {DragDropProvider} from '@dnd-kit/react'
+import {useSortable} from '@dnd-kit/react/sortable'
+import {move} from '@dnd-kit/helpers'
 import './App.css'
 
 
@@ -12,6 +15,106 @@ const trackNames = {
   meccanica: 'Meccanica, Meccatronica ed Energia',
   chimica: 'Chimica, Materiali e Biotecnologie',
   cat: 'Costruzioni, Ambiente e Territorio'
+}
+
+// ======================================================
+// COMPONENTE DRAGABLE
+// ======================================================
+
+function SortableRankingItem({
+  item,
+  index,
+  total,
+  onMoveUp,
+  onMoveDown,
+  highlighted
+}) {
+
+  const {
+    ref,
+    handleRef,
+    isDragging
+  } = useSortable({
+    id: item.id,
+    index
+  })
+
+  return (
+
+    <div
+      ref={ref}
+      className={
+        `
+        ranking-item
+        ${highlighted
+          ? 'ranking-item-highlighted'
+          : ''
+        }
+        ${isDragging
+          ? 'ranking-item-dragging'
+          : ''
+        }
+        `
+      }
+    >
+
+      <div className="ranking-main">
+
+        <button
+          type="button"
+          ref={handleRef}
+          className="ranking-drag-handle"
+          aria-label="Trascina per cambiare posizione"
+        >
+          ⋮⋮
+        </button>
+
+
+        <div className="ranking-position">
+          {index + 1}
+        </div>
+
+
+        <div className="ranking-text">
+          {item.domanda}
+        </div>
+
+      </div>
+
+
+      <div className="ranking-buttons">
+
+        <button
+          type="button"
+          className="ranking-arrow"
+          disabled={index === 0}
+          onClick={() =>
+            onMoveUp(index)
+          }
+          aria-label="Sposta verso l'alto"
+        >
+          ↑
+        </button>
+
+
+        <button
+          type="button"
+          className="ranking-arrow"
+          disabled={
+            index === total - 1
+          }
+          onClick={() =>
+            onMoveDown(index)
+          }
+          aria-label="Sposta verso il basso"
+        >
+          ↓
+        </button>
+
+      </div>
+
+    </div>
+  )
 }
 
 
@@ -174,9 +277,9 @@ function App() {
   // ==================================================
   // DRAG AND DROP 
   // ==================================================
-  const [draggedRankingIndex, setDraggedRankingIndex] = useState(null)
+  //const [draggedRankingIndex, setDraggedRankingIndex] = useState(null)
 
-  const [draggedWorkRankingIndex, setDraggedWorkRankingIndex] = useState(null)
+  //const [draggedWorkRankingIndex, setDraggedWorkRankingIndex] = useState(null)
 
   // ==================================================
   // CARICAMENTO DOMANDE
@@ -1422,6 +1525,7 @@ function App() {
         <div className="app">
 
           <main className="main-container">
+
             <BrandHeader />
 
             <StepsOverview />
@@ -1434,158 +1538,90 @@ function App() {
             <div className="question-card">
 
               <h2>
-                Ordina le aree
-                professionali
+                Ordina le aree professionali
               </h2>
+
 
               <p className="answer-instruction">
 
-                Porta in alto
-                le attività che ti
+                Porta in alto le attività che ti
                 interessano maggiormente.
 
-                La posizione 1
-                rappresenta quella
+                La posizione 1 rappresenta quella
                 che preferisci.
 
               </p>
 
 
-              <div className="ranking-list">
+              {/* =====================================
+              RANKING CON DRAG & DROP
+             ===================================== */}
 
-                {ranking.map(
-                  (
-                    item,
-                    index
-                  ) => (
+              <DragDropProvider
+                onDragEnd={event => {
 
-                    <div
-                      key={
-                        item.id
-                      }
-                      className={
-                        highlightedRankingId ===
-                          item.id
-                          ? 'ranking-item ranking-item-highlighted'
-                          : 'ranking-item'
-                      }
-                      draggable
+                  setRanking(
+                    current =>
+                      move(
+                        current,
+                        event
+                      )
+                  )
 
-                      onDragStart={() => {
-                        setDraggedRankingIndex(index)
-                      }}
+                }}
+              >
 
-                      onDragOver={event => {
-                        event.preventDefault()
-                      }}
+                <div className="ranking-list">
 
-                      onDrop={() => {
+                  {ranking.map(
+                    (
+                      item,
+                      index
+                    ) => (
 
-                        if (
-                          draggedRankingIndex === null ||
-                          draggedRankingIndex === index
-                        ) {
-                          return
+                      <SortableRankingItem
+                        key={item.id}
+
+                        item={item}
+
+                        index={index}
+
+                        total={
+                          ranking.length
                         }
 
-                        const newRanking =
-                          reorderItems(
-                            ranking,
-                            draggedRankingIndex,
-                            index
-                          )
+                        highlighted={
+                          highlightedRankingId ===
+                          item.id
+                        }
 
-                        setRanking(newRanking)
+                        onMoveUp={
+                          moveRankingUp
+                        }
 
-                        setDraggedRankingIndex(null)
-                      }}
+                        onMoveDown={
+                          moveRankingDown
+                        }
+                      />
 
-                      onDragEnd={() => {
-                        setDraggedRankingIndex(null)
-                      }}
-                    >
+                    )
+                  )}
 
-                      <div className="ranking-main">
+                </div>
 
-                        <div className="ranking-drag-handle">
-                          ⋮⋮
-                        </div>
-
-                        <div className="ranking-position">
-
-                          {
-                            index +
-                            1
-                          }
-
-                        </div>
+              </DragDropProvider>
 
 
-                        <div className="ranking-text">
-
-                          {
-                            item.domanda
-                          }
-
-                        </div>
-
-                      </div>
-
-
-                      <div className="ranking-buttons">
-
-                        <button
-                          className="ranking-arrow"
-                          onClick={() =>
-                            moveRankingUp(
-                              index
-                            )
-                          }
-                          disabled={
-                            index ===
-                            0
-                          }
-                          aria-label="Sposta verso l'alto"
-                        >
-
-                          ↑
-
-                        </button>
-
-
-                        <button
-                          className="ranking-arrow"
-                          onClick={() =>
-                            moveRankingDown(
-                              index
-                            )
-                          }
-                          disabled={
-                            index ===
-                            ranking.length -
-                            1
-                          }
-                          aria-label="Sposta verso il basso"
-                        >
-
-                          ↓
-
-                        </button>
-
-                      </div>
-
-                    </div>
-
-                  )
-                )}
-
-              </div>
-
+              {/* =====================================
+              NAVIGAZIONE
+             ===================================== */}
 
               <div className="navigation-buttons">
 
                 <button
+                  type="button"
                   className="secondary-button"
+
                   onClick={() =>
                     setCurrentSection(
                       'intro-areas'
@@ -1599,10 +1635,14 @@ function App() {
 
 
                 <button
+                  type="button"
                   className="primary-button"
+
                   onClick={() => {
 
-                    setAreasRankingCompleted(true)
+                    setAreasRankingCompleted(
+                      true
+                    )
 
                     setCurrentSection(
                       'intro-interests'
@@ -1610,8 +1650,7 @@ function App() {
 
                     window.scrollTo({
                       top: 0,
-                      behavior:
-                        'smooth'
+                      behavior: 'smooth'
                     })
 
                   }}
@@ -2603,118 +2642,63 @@ function App() {
             </p>
 
 
-            <div className="ranking-list">
+            {/* =====================================
+    RANKING LAVORO CON DRAG & DROP
+   ===================================== */}
 
-              {workRanking.map(
-                (
-                  item,
-                  index
-                ) => (
+            <DragDropProvider
+              onDragEnd={event => {
 
-                  <div
-                    key={item.id}
-                    className={
-                      highlightedWorkRankingId ===
-                        item.id
-                        ? 'ranking-item ranking-item-highlighted'
-                        : 'ranking-item'
-                    }
-                    draggable
+                setWorkRanking(
+                  current =>
+                    move(
+                      current,
+                      event
+                    )
+                )
 
-                    onDragStart={() => {
-                      setDraggedRankingIndex(index)
-                    }}
+              }}
+            >
 
-                    onDragOver={event => {
-                      event.preventDefault()
-                    }}
+              <div className="ranking-list">
 
-                    onDrop={() => {
+                {workRanking.map(
+                  (
+                    item,
+                    index
+                  ) => (
 
-                      if (
-                        draggedRankingIndex === null ||
-                        draggedRankingIndex === index
-                      ) {
-                        return
+                    <SortableRankingItem
+                      key={item.id}
+
+                      item={item}
+
+                      index={index}
+
+                      total={
+                        workRanking.length
                       }
 
-                      const newRanking =
-                        reorderItems(
-                          ranking,
-                          draggedRankingIndex,
-                          index
-                        )
+                      highlighted={
+                        highlightedWorkRankingId ===
+                        item.id
+                      }
 
-                      setRanking(newRanking)
+                      onMoveUp={
+                        moveWorkRankingUp
+                      }
 
-                      setDraggedRankingIndex(null)
-                    }}
+                      onMoveDown={
+                        moveWorkRankingDown
+                      }
+                    />
 
-                    onDragEnd={() => {
-                      setDraggedRankingIndex(null)
-                    }}
-                  >
+                  )
+                )}
 
-                    <div className="ranking-main">
-                      <div className="ranking-drag-handle">
-                        ⋮⋮
-                      </div>
+              </div>
 
-                      <div className="ranking-position">
-                        {index + 1}
-                      </div>
-
-                      <div className="ranking-text">
-                        {item.domanda}
-                      </div>
-
-                    </div>
-
-
-                    <div className="ranking-buttons">
-
-                      <button
-                        type="button"
-                        className="ranking-arrow"
-                        onClick={() =>
-                          moveWorkRankingUp(
-                            index
-                          )
-                        }
-                        disabled={
-                          index === 0
-                        }
-                        aria-label="Sposta verso l'alto"
-                      >
-                        ↑
-                      </button>
-
-
-                      <button
-                        type="button"
-                        className="ranking-arrow"
-                        onClick={() =>
-                          moveWorkRankingDown(
-                            index
-                          )
-                        }
-                        disabled={
-                          index ===
-                          workRanking.length - 1
-                        }
-                        aria-label="Sposta verso il basso"
-                      >
-                        ↓
-                      </button>
-
-                    </div>
-
-                  </div>
-
-                )
-              )}
-
-            </div>
+            </DragDropProvider>
 
 
             <div className="navigation-buttons">
