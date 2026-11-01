@@ -146,6 +146,23 @@ function App() {
 
   const [highlightedWorkRankingId, setHighlightedWorkRankingId] = useState(null)
 
+  // ==================================================
+  // PASSO 3 - METODO DI STUDIO
+  // ==================================================
+
+  const [studyAnswers, setStudyAnswers] = useState({})
+
+  const [currentStudyQuestion, setCurrentStudyQuestion] = useState(0)
+  // ==================================================
+  // PASSO 4 - LA SCELTA
+  // ==================================================
+
+  const [selectedTrack, setSelectedTrack] = useState('')
+
+  const [choiceAnswers, setChoiceAnswers] = useState({})
+
+  const [currentChoiceQuestion, setCurrentChoiceQuestion] = useState(0)
+
 
   // ==================================================
   // CARICAMENTO DOMANDE
@@ -300,6 +317,113 @@ function App() {
         (a, b) =>
           a.ordine - b.ordine
       )
+
+
+  const studyHomeQuestions =
+    questions
+      .filter(
+        question =>
+          question.step === 3 &&
+          question.section === 'studio_casa' &&
+          question.type === 'likert'
+      )
+      .sort(
+        (a, b) =>
+          a.ordine - b.ordine
+      )
+
+
+  const studyLessonQuestions =
+    questions
+      .filter(
+        question =>
+          question.step === 3 &&
+          question.section === 'lezioni' &&
+          question.type === 'likert'
+      )
+      .sort(
+        (a, b) =>
+          a.ordine - b.ordine
+      )
+
+
+  const studyOralQuestions =
+    questions
+      .filter(
+        question =>
+          question.step === 3 &&
+          question.section === 'interrogazioni' &&
+          question.type === 'likert'
+      )
+      .sort(
+        (a, b) =>
+          a.ordine - b.ordine
+      )
+
+
+  const studyGroupQuestions =
+    questions
+      .filter(
+        question =>
+          question.step === 3 &&
+          question.section === 'lavoro_gruppo' &&
+          question.type === 'likert'
+      )
+      .sort(
+        (a, b) =>
+          a.ordine - b.ordine
+      )
+
+  const trackChoiceQuestion =
+    questions.find(
+      question =>
+        question.step === 4 &&
+        question.section === 'scelta_indirizzo' &&
+        question.type === 'choice'
+    )
+
+
+  const choiceMotivationQuestions =
+    questions
+      .filter(
+        question =>
+          question.step === 4 &&
+          question.section === 'motivazione_scelta' &&
+          question.type === 'text'
+      )
+      .sort(
+        (a, b) =>
+          a.ordine - b.ordine
+      )
+
+
+  const choiceStrengthQuestions =
+    questions
+      .filter(
+        question =>
+          question.step === 4 &&
+          question.section === 'punti_forza_scelta' &&
+          question.type === 'text'
+      )
+      .sort(
+        (a, b) =>
+          a.ordine - b.ordine
+      )
+
+
+  const choiceProsConsQuestions =
+    questions
+      .filter(
+        question =>
+          question.step === 4 &&
+          question.section === 'vantaggi_svantaggi' &&
+          question.type === 'text'
+      )
+      .sort(
+        (a, b) =>
+          a.ordine - b.ordine
+      )
+
   // ==================================================
   // INIZIALIZZIAMO IL RANKING
   // ==================================================
@@ -585,6 +709,30 @@ function App() {
 
   }
 
+  function selectStudyAnswer(
+    questionId,
+    value
+  ) {
+
+    setStudyAnswers(
+      previous => ({
+        ...previous,
+        [questionId]: value
+      })
+    )
+  }
+  function updateChoiceAnswer(
+    questionId,
+    value
+  ) {
+
+    setChoiceAnswers(
+      previous => ({
+        ...previous,
+        [questionId]: value
+      })
+    )
+  }
 
   // ==================================================
   // INVIA RISULTATI
@@ -645,11 +793,11 @@ function App() {
         await response.json()
 
 
-setResult(data)
+      setResult(data)
 
-setCurrentSection(
-  'step1-results'
-)
+      setCurrentSection(
+        'step1-results'
+      )
 
       window.scrollTo({
         top: 0,
@@ -672,10 +820,14 @@ setCurrentSection(
 
 
   // ==================================================
-  // RIPARTI DA CAPO
+  // PULSANTI PER PROSSIMA SEZIONE O RIPETI
   // ==================================================
 
   function restartQuestionnaire() {
+
+    // ==============================================
+    // PASSO 1
+    // ==============================================
 
     setAnswers({})
 
@@ -689,19 +841,66 @@ setCurrentSection(
       [...rankingQuestions]
     )
 
+    setHighlightedRankingId(null)
+
     setResult(null)
+
+
+    // ==============================================
+    // PASSO 2
+    // ==============================================
+
+    setWorkRanking(
+      [...workRankingQuestions]
+    )
+
+    setWorkAnswers({})
+
+    setWorkReflectionAnswers({})
+
+    setCurrentWorkCompetence(0)
+
+    setCurrentWorkReflection(0)
+
+    setHighlightedWorkRankingId(null)
+
+
+    // ==============================================
+    // PASSO 3
+    // ==============================================
+
+    setStudyAnswers({})
+
+    setCurrentStudyQuestion(0)
+
+
+    // ==============================================
+    // PASSO 4
+    // ==============================================
+
+    setSelectedTrack('')
+
+    setChoiceAnswers({})
+
+    setCurrentChoiceQuestion(0)
+
+
+    // ==============================================
+    // TORNA ALL'INIZIO
+    // ==============================================
 
     setCurrentSection(
       'intro-areas'
     )
 
-    setPage('questionnaire')
+    setPage(
+      'questionnaire'
+    )
 
     window.scrollTo({
       top: 0,
       behavior: 'smooth'
     })
-
   }
 
   function BrandHeader() {
@@ -1871,225 +2070,225 @@ setCurrentSection(
   }
 
 
-// ==========================
-// SEZIONE RISULTATI
-// ==========================
+  // ==========================
+  // SEZIONE RISULTATI
+  // ==========================
 
-if (
-  currentSection ===
-  'step1-results' &&
-  result
-) {
+  if (
+    currentSection ===
+    'step1-results' &&
+    result
+  ) {
 
-  const recommended =
-    Array.isArray(result.recommended)
-      ? result.recommended
-      : result.recommended
-        ? [result.recommended]
-        : []
-
-
-  return (
-
-    <div className="app">
-
-      <main className="main-container">
-
-        <BrandHeader />
-
-        <StepsOverview
-          activeStep={1}
-        />
+    const recommended =
+      Array.isArray(result.recommended)
+        ? result.recommended
+        : result.recommended
+          ? [result.recommended]
+          : []
 
 
-        <div className="step-result-card">
+    return (
 
-          <div className="transition-label">
-            PASSO 1 COMPLETATO
-          </div>
+      <div className="app">
 
+        <main className="main-container">
 
-          <h1>
-            Il tuo profilo di interessi
-          </h1>
+          <BrandHeader />
 
-
-          <p className="step-result-intro">
-
-            In base alle attività che hai
-            indicato come più interessanti,
-            questi sono gli indirizzi che
-            risultano più vicini ai tuoi
-            interessi.
-
-          </p>
+          <StepsOverview
+            activeStep={1}
+          />
 
 
-          {recommended.length === 1 ? (
+          <div className="step-result-card">
 
-            <div className="step-result-highlight">
+            <div className="transition-label">
+              PASSO 1 COMPLETATO
+            </div>
 
-              <span className="step-result-label">
-                Maggiore affinità
-              </span>
 
-              <strong>
-                {
-                  trackNames[
+            <h1>
+              Il tuo profilo di interessi
+            </h1>
+
+
+            <p className="step-result-intro">
+
+              In base alle attività che hai
+              indicato come più interessanti,
+              questi sono gli indirizzi che
+              risultano più vicini ai tuoi
+              interessi.
+
+            </p>
+
+
+            {recommended.length === 1 ? (
+
+              <div className="step-result-highlight">
+
+                <span className="step-result-label">
+                  Maggiore affinità
+                </span>
+
+                <strong>
+                  {
+                    trackNames[
                     recommended[0].indirizzo
-                  ]
-                }
-              </strong>
+                    ]
+                  }
+                </strong>
 
-              <span>
-                {
-                  recommended[0].punteggio
-                } punti
-              </span>
+                <span>
+                  {
+                    recommended[0].punteggio
+                  } punti
+                </span>
 
-            </div>
+              </div>
 
-          ) : (
+            ) : (
 
-            <div className="step-result-highlight">
+              <div className="step-result-highlight">
 
-              <span className="step-result-label">
-                Affinità condivisa
-              </span>
+                <span className="step-result-label">
+                  Affinità condivisa
+                </span>
 
-              {recommended.map(item => (
+                {recommended.map(item => (
 
-                <div
-                  className="step-result-tie"
-                  key={item.indirizzo}
-                >
+                  <div
+                    className="step-result-tie"
+                    key={item.indirizzo}
+                  >
 
-                  <strong>
-                    {
-                      trackNames[
+                    <strong>
+                      {
+                        trackNames[
                         item.indirizzo
-                      ]
-                    }
-                  </strong>
+                        ]
+                      }
+                    </strong>
 
-                  <span>
-                    {item.punteggio} punti
-                  </span>
-
-                </div>
-
-              ))}
-
-            </div>
-
-          )}
-
-
-          <div className="step-result-ranking">
-
-            {result.ranking.map(
-              (
-                item,
-                index
-              ) => (
-
-                <div
-                  key={item.indirizzo}
-                  className="step-result-row"
-                >
-
-                  <div className="step-result-position">
-                    {index + 1}
-                  </div>
-
-                  <div className="step-result-name">
-
-                    {
-                      trackNames[
-                        item.indirizzo
-                      ]
-                    }
+                    <span>
+                      {item.punteggio} punti
+                    </span>
 
                   </div>
 
-                  <strong>
-                    {item.punteggio}
-                  </strong>
+                ))}
 
-                </div>
+              </div>
 
-              )
             )}
 
+
+            <div className="step-result-ranking">
+
+              {result.ranking.map(
+                (
+                  item,
+                  index
+                ) => (
+
+                  <div
+                    key={item.indirizzo}
+                    className="step-result-row"
+                  >
+
+                    <div className="step-result-position">
+                      {index + 1}
+                    </div>
+
+                    <div className="step-result-name">
+
+                      {
+                        trackNames[
+                        item.indirizzo
+                        ]
+                      }
+
+                    </div>
+
+                    <strong>
+                      {item.punteggio}
+                    </strong>
+
+                  </div>
+
+                )
+              )}
+
+            </div>
+
+
+            <div className="step-result-note">
+
+              <strong>
+                Attenzione:
+              </strong>
+
+              questo risultato riguarda
+              solamente i tuoi interessi.
+
+              Non rappresenta ancora
+              l'esito finale del percorso
+              di orientamento.
+
+            </div>
+
+
+            <div className="navigation-buttons">
+
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => {
+
+                  setCurrentReflection(
+                    reflectionQuestions.length - 1
+                  )
+
+                  setCurrentSection(
+                    'reflection'
+                  )
+
+                }}
+              >
+                Indietro
+              </button>
+
+
+              <button
+                type="button"
+                className="primary-button"
+                onClick={() => {
+
+                  setCurrentSection(
+                    'intro-work'
+                  )
+
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                  })
+
+                }}
+              >
+                Continua al Passo 2
+              </button>
+
+            </div>
+
           </div>
 
+        </main>
 
-          <div className="step-result-note">
+      </div>
 
-            <strong>
-              Attenzione:
-            </strong>
-
-            questo risultato riguarda
-            solamente i tuoi interessi.
-
-            Non rappresenta ancora
-            l'esito finale del percorso
-            di orientamento.
-
-          </div>
-
-
-          <div className="navigation-buttons">
-
-            <button
-              type="button"
-              className="secondary-button"
-              onClick={() => {
-
-                setCurrentReflection(
-                  reflectionQuestions.length - 1
-                )
-
-                setCurrentSection(
-                  'reflection'
-                )
-
-              }}
-            >
-              Indietro
-            </button>
-
-
-            <button
-              type="button"
-              className="primary-button"
-              onClick={() => {
-
-                setCurrentSection(
-                  'intro-work'
-                )
-
-                window.scrollTo({
-                  top: 0,
-                  behavior: 'smooth'
-                })
-
-              }}
-            >
-              Continua al Passo 2
-            </button>
-
-          </div>
-
-        </div>
-
-      </main>
-
-    </div>
-
-  )
-}
+    )
+  }
 
   // ============================
   // SEZIONE INTRO-WORK 
@@ -2581,6 +2780,7 @@ if (
               <button
                 type="button"
                 className="primary-button"
+
                 disabled={
                   !workAnswers[
                   question.id
@@ -2917,244 +3117,47 @@ if (
   // ============================
 
   if (
-  currentSection ===
-  'work-completed'
-) {
-
-  // Prime due caratteristiche
-  // del lavoro scelte dallo studente
-  const topWorkCharacteristics =
-    workRanking.slice(0, 2)
-
-
-  // Ordiniamo le competenze
-  // in base al punteggio attribuito
-  const rankedCompetences =
-    workCompetenceQuestions
-
-      .map(question => ({
-
-        id:
-          question.id,
-
-        domanda:
-          question.domanda,
-
-        value:
-          Number(
-            workAnswers[
-              question.id
-            ] || 0
-          )
-
-      }))
-
-      .sort(
-        (a, b) =>
-          b.value - a.value
-      )
-
-
-  // Mostriamo le prime 5
-  const topCompetences =
-    rankedCompetences.slice(0, 5)
-
-
-  return (
-
-    <div className="app">
-
-      <main className="main-container">
-
-        <BrandHeader />
-
-        <StepsOverview
-          activeStep={2}
-        />
-
-
-        <div className="step-result-card">
-
-          <div className="transition-label">
-            PASSO 2 COMPLETATO
-          </div>
-
-
-          <h1>
-            Il tuo profilo lavorativo
-          </h1>
-
-
-          <p className="step-result-intro">
-
-            Le tue risposte descrivono
-            quali aspetti consideri più
-            importanti nel lavoro e quali
-            competenze ritieni di possedere
-            maggiormente.
-
-          </p>
-
-
-          {/* ======================================
-              PRIME DUE CARATTERISTICHE
-             ====================================== */}
-
-          <div className="summary-section">
-
-            <h2>
-              Nel lavoro vorresti soprattutto...
-            </h2>
-
-
-            <div className="work-priorities">
-
-              {topWorkCharacteristics.map(
-                (
-                  item,
-                  index
-                ) => (
-
-                  <div
-                    className="work-priority"
-                    key={item.id}
-                  >
-
-                    <div className="work-priority-number">
-                      {index + 1}
-                    </div>
-
-                    <div>
-                      {item.domanda}
-                    </div>
-
-                  </div>
-
-                )
-              )}
-
-            </div>
-
-          </div>
-
-
-          {/* ======================================
-              COMPETENZE PIÙ FORTI
-             ====================================== */}
-
-          <div className="summary-section">
-
-            <h2>
-              Le competenze che ritieni
-              di possedere maggiormente
-            </h2>
-
-
-            <div className="competence-summary">
-
-              {topCompetences.map(
-                competence => (
-
-                  <div
-                    className="competence-summary-row"
-                    key={competence.id}
-                  >
-
-                    <span>
-                      {competence.domanda}
-                    </span>
-
-                    <strong>
-                      {competence.value}/7
-                    </strong>
-
-                  </div>
-
-                )
-              )}
-
-            </div>
-
-          </div>
-
-
-          {/* ======================================
-              NOTA
-             ====================================== */}
-
-          <div className="step-result-note">
-
-            Questo riepilogo non assegna
-            un indirizzo.
-
-            Serve a mettere in relazione
-            ciò che cerchi nel tuo futuro
-            lavoro con le competenze che
-            riconosci in te stesso.
-
-          </div>
-
-
-          <div className="navigation-buttons">
-
-            <button
-              type="button"
-              className="secondary-button"
-              onClick={() => {
-
-                setCurrentWorkReflection(
-                  workReflectionQuestions.length - 1
-                )
-
-                setCurrentSection(
-                  'work-reflection'
-                )
-
-              }}
-            >
-              Indietro
-            </button>
-
-
-            <button
-              type="button"
-              className="primary-button"
-              disabled
-            >
-              Continua al Passo 3
-            </button>
-
-          </div>
-
-        </div>
-
-      </main>
-
-    </div>
-
-  )
-}
-
-
-  // ==================================================
-  // RISULTATI
-  // ==================================================
-
-  if (
-    page === 'results' &&
-    result
+    currentSection ===
+    'work-completed'
   ) {
 
-    const recommended =
-      Array.isArray(
-        result.recommended
-      )
-        ? result.recommended
-        : result.recommended
-          ? [
-            result.recommended
-          ]
-          : []
+    // Prime due caratteristiche
+    // del lavoro scelte dallo studente
+    const topWorkCharacteristics =
+      workRanking.slice(0, 2)
+
+
+    // Ordiniamo le competenze
+    // in base al punteggio attribuito
+    const rankedCompetences =
+      workCompetenceQuestions
+
+        .map(question => ({
+
+          id:
+            question.id,
+
+          domanda:
+            question.domanda,
+
+          value:
+            Number(
+              workAnswers[
+              question.id
+              ] || 0
+            )
+
+        }))
+
+        .sort(
+          (a, b) =>
+            b.value - a.value
+        )
+
+
+    // Mostriamo le prime 5
+    const topCompetences =
+      rankedCompetences.slice(0, 5)
 
 
     return (
@@ -3163,198 +3166,131 @@ if (
 
         <main className="main-container">
 
-          <div className="results-page">
+          <BrandHeader />
 
-            <div className="results-label">
-              PASSO 1 COMPLETATO
+          <StepsOverview
+            activeStep={2}
+          />
+
+
+          <div className="step-result-card">
+
+            <div className="transition-label">
+              PASSO 2 COMPLETATO
             </div>
 
 
-            <h2 className="results-small-title">
-              IL TUO RISULTATO
-            </h2>
+            <h1>
+              Il tuo profilo lavorativo
+            </h1>
 
 
-            {
-              recommended.length ===
-                1
-                ? (
+            <p className="step-result-intro">
 
-                  <>
+              Le tue risposte descrivono
+              quali aspetti consideri più
+              importanti nel lavoro e quali
+              competenze ritieni di possedere
+              maggiormente.
 
-                    <h1 className="result-main-title">
-
-                      {
-                        trackNames[
-                        recommended[
-                          0
-                        ]
-                          .indirizzo
-                        ]
-                      }
-
-                    </h1>
+            </p>
 
 
-                    <p className="answer-instruction">
+            {/* ======================================
+              PRIME DUE CARATTERISTICHE
+             ====================================== */}
 
-                      Questo è
-                      l'indirizzo
-                      che, in questa
-                      prima parte del
-                      percorso,
-                      risulta più
-                      vicino ai tuoi
-                      interessi.
+            <div className="summary-section">
 
-                    </p>
-
-                  </>
-
-                )
-
-                : (
-
-                  <>
-
-                    <h1 className="result-main-title">
-
-                      Profilo
-                      orientativo
-                      condiviso
-
-                    </h1>
+              <h2>
+                Nel lavoro vorresti soprattutto...
+              </h2>
 
 
-                    <p className="answer-instruction">
+              <div className="work-priorities">
 
-                      Le tue risposte
-                      mostrano la
-                      stessa affinità
-                      con più
-                      indirizzi.
-
-                    </p>
-
-
-                    <div className="recommended-tie">
-
-                      {
-                        recommended.map(
-                          item => (
-
-                            <div
-                              key={
-                                item.indirizzo
-                              }
-                              className="recommended-tie-item"
-                            >
-
-                              <strong>
-
-                                {
-                                  trackNames[
-                                  item
-                                    .indirizzo
-                                  ]
-                                }
-
-                              </strong>
-
-                              <span>
-
-                                {
-                                  item
-                                    .punteggio
-                                } punti
-
-                              </span>
-
-                            </div>
-
-                          )
-                        )
-                      }
-
-                    </div>
-
-                  </>
-
-                )
-            }
-
-
-            <div className="results-ranking">
-
-              {
-                result.ranking.map(
+                {topWorkCharacteristics.map(
                   (
                     item,
                     index
                   ) => (
 
                     <div
-                      className="result-row"
-                      key={
-                        item.indirizzo
-                      }
+                      className="work-priority"
+                      key={item.id}
+                    >
+
+                      <div className="work-priority-number">
+                        {index + 1}
+                      </div>
+
+                      <div>
+                        {item.domanda}
+                      </div>
+
+                    </div>
+
+                  )
+                )}
+
+              </div>
+
+            </div>
+
+
+            {/* ======================================
+              COMPETENZE PIÙ FORTI
+             ====================================== */}
+
+            <div className="summary-section">
+
+              <h2>
+                Le competenze che ritieni
+                di possedere maggiormente
+              </h2>
+
+
+              <div className="competence-summary">
+
+                {topCompetences.map(
+                  competence => (
+
+                    <div
+                      className="competence-summary-row"
+                      key={competence.id}
                     >
 
                       <span>
-
-                        {
-                          index +
-                          1
-                        }.{' '}
-
-                        {
-                          trackNames[
-                          item
-                            .indirizzo
-                          ]
-                        }
-
+                        {competence.domanda}
                       </span>
 
-
                       <strong>
-
-                        {
-                          item.punteggio
-                        } punti
-
+                        {competence.value}/7
                       </strong>
 
                     </div>
 
                   )
-                )
-              }
+                )}
+
+              </div>
 
             </div>
 
 
-            <div className="results-note">
+            {/* ======================================
+              NOTA
+             ====================================== */}
 
-              <h3>
-                Ricorda
-              </h3>
+            <div className="step-result-note">
 
-              <p>
+              Questo riepilogo non assegna
+              un indirizzo.
 
-                Questo risultato non
-                rappresenta una scelta
-                definitiva.
-
-                È uno strumento per
-                aiutarti a riflettere
-                sui tuoi interessi e
-                sarà affiancato dagli
-                altri passi del
-                percorso di
-                orientamento.
-
-              </p>
+              Serve a mettere in relazione
+              ciò che cerchi nel tuo futuro
+              lavoro con le competenze che
+              riconosci in te stesso.
 
             </div>
 
@@ -3362,27 +3298,411 @@ if (
             <div className="navigation-buttons">
 
               <button
+                type="button"
                 className="secondary-button"
-                onClick={() =>
-                  setPage(
-                    'home'
+                onClick={() => {
+
+                  setCurrentWorkReflection(
+                    workReflectionQuestions.length - 1
                   )
-                }
+
+                  setCurrentSection(
+                    'work-reflection'
+                  )
+
+                }}
               >
-
-                Torna alla home
-
+                Indietro
               </button>
 
 
               <button
+                type="button"
                 className="primary-button"
-                onClick={
-                  restartQuestionnaire
+                onClick={() => {
+
+                  setCurrentSection(
+                    'intro-study'
+                  )
+
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                  })
+
+                }}
+              >
+                Continua al Passo 3
+              </button>
+
+            </div>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  }
+
+  // ==================================================
+  // PASSO 3 - INTRO METODO DI STUDIO
+  // ==================================================
+
+  if (
+    currentSection ===
+    'intro-study'
+  ) {
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={3}
+          />
+
+          <div className="transition-card">
+
+            <div className="transition-label">
+              PASSO 3 · METODO DI STUDIO
+            </div>
+
+            <h1>
+              Il tuo metodo di studio
+            </h1>
+
+            <p>
+              Qualunque sia l'indirizzo
+              che sceglierai, sarà importante
+              affrontare il nuovo percorso
+              con un metodo di studio efficace.
+            </p>
+
+            <p>
+              In questa parte rifletterai
+              sul tuo comportamento in
+              quattro diverse situazioni:
+            </p>
+
+
+            <div className="study-areas-preview">
+
+              <div className="study-area-preview">
+                <strong>1</strong>
+                <span>Studio a casa</span>
+              </div>
+
+              <div className="study-area-preview">
+                <strong>2</strong>
+                <span>Durante le lezioni</span>
+              </div>
+
+              <div className="study-area-preview">
+                <strong>3</strong>
+                <span>Durante le interrogazioni</span>
+              </div>
+
+              <div className="study-area-preview">
+                <strong>4</strong>
+                <span>Lavori di gruppo</span>
+              </div>
+
+            </div>
+
+
+            <p>
+              Per ogni affermazione indica
+              quanto descrive il tuo comportamento
+              utilizzando una scala da
+              <strong> 1 = Per niente </strong>
+              a
+              <strong> 7 = Del tutto</strong>.
+            </p>
+
+
+            <button
+              type="button"
+              className="primary-button"
+              onClick={() => {
+
+                setCurrentSection(
+                  'study-home'
+                )
+
+                window.scrollTo({
+                  top: 0,
+                  behavior: 'smooth'
+                })
+
+              }}
+            >
+              Inizia il Passo 3
+            </button>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  }
+
+  // ==================================================
+  // PASSO 3 - STUDIO A CASA
+  // ==================================================
+
+  if (
+    currentSection ===
+    'study-home'
+  ) {
+
+    const question =
+      studyHomeQuestions[
+      currentStudyQuestion
+      ]
+
+    if (!question) {
+      return null
+    }
+
+    const min =
+      question.min || 1
+
+    const max =
+      question.max || 7
+
+    const values =
+      Array.from(
+        {
+          length:
+            max - min + 1
+        },
+        (_, index) =>
+          min + index
+      )
+
+    const progress =
+      Math.round(
+        (
+          (
+            currentStudyQuestion + 1
+          ) /
+          studyHomeQuestions.length
+        ) *
+        100
+      )
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={3}
+          />
+
+          <div className="section-header">
+
+            <div className="section-step">
+              PASSO 3 DI 4
+            </div>
+
+            <div className="section-code">
+              SEZIONE 3A
+            </div>
+
+            <h1>
+              Quando studio a casa...
+            </h1>
+
+            <p>
+              Indica quanto questa frase
+              descrive il tuo comportamento.
+            </p>
+
+          </div>
+
+
+          <div className="question-progress">
+
+            <div className="progress-label">
+
+              DOMANDA {
+                currentStudyQuestion + 1
+              } / {
+                studyHomeQuestions.length
+              }
+
+            </div>
+
+            <div className="progress-percentage">
+              {progress}%
+            </div>
+
+          </div>
+
+
+          <div className="progress-bar">
+
+            <div
+              className="progress-bar-fill"
+              style={{
+                width: `${progress}%`
+              }}
+            />
+
+          </div>
+
+
+          <div className="question-card">
+
+            <h2>
+              {question.domanda}
+            </h2>
+
+
+            <p className="answer-instruction">
+              Quanto descrive il tuo
+              comportamento?
+            </p>
+
+
+            <div
+              className="likert-scale"
+              style={{
+                gridTemplateColumns:
+                  `repeat(${values.length}, 1fr)`
+              }}
+            >
+
+              {values.map(value => (
+
+                <button
+                  type="button"
+                  key={value}
+                  className={
+                    studyAnswers[
+                      question.id
+                    ] === value
+                      ? 'likert-button selected'
+                      : 'likert-button'
+                  }
+                  onClick={() =>
+                    selectStudyAnswer(
+                      question.id,
+                      value
+                    )
+                  }
+                >
+                  {value}
+                </button>
+
+              ))}
+
+            </div>
+
+
+            <div className="likert-labels">
+
+              <span>
+                Per niente
+              </span>
+
+              <span>
+                Del tutto
+              </span>
+
+            </div>
+
+
+            <div className="navigation-buttons">
+
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => {
+
+                  if (
+                    currentStudyQuestion >
+                    0
+                  ) {
+
+                    setCurrentStudyQuestion(
+                      currentStudyQuestion - 1
+                    )
+
+                  } else {
+
+                    setCurrentSection(
+                      'intro-study'
+                    )
+
+                  }
+
+                }}
+              >
+                Indietro
+              </button>
+
+
+              <button
+                type="button"
+                className="primary-button"
+                disabled={
+                  !studyAnswers[
+                  question.id
+                  ]
                 }
+                onClick={() => {
+
+                  if (
+                    currentStudyQuestion <
+                    studyHomeQuestions.length - 1
+                  ) {
+
+                    setCurrentStudyQuestion(
+                      currentStudyQuestion + 1
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  } else {
+
+                    setCurrentStudyQuestion(0)
+
+                    setCurrentSection(
+                      'study-lessons'
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  }
+
+                }}
               >
 
-                Ripeti il Passo 1
+                {
+                  currentStudyQuestion ===
+                    studyHomeQuestions.length - 1
+                    ? 'Continua'
+                    : 'Avanti'
+                }
 
               </button>
 
@@ -3395,6 +3715,2531 @@ if (
       </div>
 
     )
+  }
+
+  // ==================================================
+  // PASSO 3 - DURANTE LE LEZIONI
+  // ==================================================
+
+  if (
+    currentSection ===
+    'study-lessons'
+  ) {
+
+    const question =
+      studyLessonQuestions[
+      currentStudyQuestion
+      ]
+
+    if (!question) {
+      return null
+    }
+
+    const min =
+      question.min || 1
+
+    const max =
+      question.max || 7
+
+    const values =
+      Array.from(
+        {
+          length:
+            max - min + 1
+        },
+        (_, index) =>
+          min + index
+      )
+
+    const progress =
+      Math.round(
+        (
+          (
+            currentStudyQuestion + 1
+          ) /
+          studyLessonQuestions.length
+        ) *
+        100
+      )
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={3}
+          />
+
+          <div className="section-header">
+
+            <div className="section-step">
+              PASSO 3 DI 4
+            </div>
+
+            <div className="section-code">
+              SEZIONE 3B
+            </div>
+
+            <h1>
+              Durante le lezioni...
+            </h1>
+
+            <p>
+              Indica quanto questa frase
+              descrive il tuo comportamento
+              durante le lezioni.
+            </p>
+
+          </div>
+
+
+          <div className="question-progress">
+
+            <div className="progress-label">
+
+              DOMANDA {
+                currentStudyQuestion + 1
+              } / {
+                studyLessonQuestions.length
+              }
+
+            </div>
+
+            <div className="progress-percentage">
+              {progress}%
+            </div>
+
+          </div>
+
+
+          <div className="progress-bar">
+
+            <div
+              className="progress-bar-fill"
+              style={{
+                width: `${progress}%`
+              }}
+            />
+
+          </div>
+
+
+          <div className="question-card">
+
+            <h2>
+              {question.domanda}
+            </h2>
+
+            <p className="answer-instruction">
+              Quanto descrive il tuo
+              comportamento?
+            </p>
+
+
+            <div
+              className="likert-scale"
+              style={{
+                gridTemplateColumns:
+                  `repeat(${values.length}, 1fr)`
+              }}
+            >
+
+              {values.map(value => (
+
+                <button
+                  type="button"
+                  key={value}
+                  className={
+                    studyAnswers[
+                      question.id
+                    ] === value
+                      ? 'likert-button selected'
+                      : 'likert-button'
+                  }
+                  onClick={() =>
+                    selectStudyAnswer(
+                      question.id,
+                      value
+                    )
+                  }
+                >
+                  {value}
+                </button>
+
+              ))}
+
+            </div>
+
+
+            <div className="likert-labels">
+
+              <span>
+                Per niente
+              </span>
+
+              <span>
+                Del tutto
+              </span>
+
+            </div>
+
+
+            <div className="navigation-buttons">
+
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => {
+
+                  if (
+                    currentStudyQuestion >
+                    0
+                  ) {
+
+                    setCurrentStudyQuestion(
+                      currentStudyQuestion - 1
+                    )
+
+                  } else {
+
+                    setCurrentStudyQuestion(
+                      studyHomeQuestions.length - 1
+                    )
+
+                    setCurrentSection(
+                      'study-home'
+                    )
+
+                  }
+
+                }}
+              >
+                Indietro
+              </button>
+
+
+              <button
+                type="button"
+                className="primary-button"
+                disabled={
+                  !studyAnswers[
+                  question.id
+                  ]
+                }
+                onClick={() => {
+
+                  if (
+                    currentStudyQuestion <
+                    studyLessonQuestions.length - 1
+                  ) {
+
+                    setCurrentStudyQuestion(
+                      currentStudyQuestion + 1
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  } else {
+
+                    setCurrentStudyQuestion(0)
+
+                    setCurrentSection(
+                      'study-orals'
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  }
+
+                }}
+              >
+
+                {
+                  currentStudyQuestion ===
+                    studyLessonQuestions.length - 1
+                    ? 'Continua'
+                    : 'Avanti'
+                }
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  }
+
+  // ==================================================
+  // PASSO 3 - DURANTE LE INTERROGAZIONI
+  // ==================================================
+
+  if (
+    currentSection ===
+    'study-orals'
+  ) {
+
+    const question =
+      studyOralQuestions[
+      currentStudyQuestion
+      ]
+
+    if (!question) {
+      return null
+    }
+
+    const min =
+      question.min || 1
+
+    const max =
+      question.max || 7
+
+    const values =
+      Array.from(
+        {
+          length:
+            max - min + 1
+        },
+        (_, index) =>
+          min + index
+      )
+
+    const progress =
+      Math.round(
+        (
+          (
+            currentStudyQuestion + 1
+          ) /
+          studyOralQuestions.length
+        ) *
+        100
+      )
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={3}
+          />
+
+          <div className="section-header">
+
+            <div className="section-step">
+              PASSO 3 DI 4
+            </div>
+
+            <div className="section-code">
+              SEZIONE 3C
+            </div>
+
+            <h1>
+              Durante le interrogazioni...
+            </h1>
+
+            <p>
+              Indica quanto questa frase
+              descrive il tuo comportamento
+              durante le interrogazioni.
+            </p>
+
+          </div>
+
+
+          <div className="question-progress">
+
+            <div className="progress-label">
+
+              DOMANDA {
+                currentStudyQuestion + 1
+              } / {
+                studyOralQuestions.length
+              }
+
+            </div>
+
+            <div className="progress-percentage">
+              {progress}%
+            </div>
+
+          </div>
+
+
+          <div className="progress-bar">
+
+            <div
+              className="progress-bar-fill"
+              style={{
+                width: `${progress}%`
+              }}
+            />
+
+          </div>
+
+
+          <div className="question-card">
+
+            <h2>
+              {question.domanda}
+            </h2>
+
+            <p className="answer-instruction">
+              Quanto descrive il tuo
+              comportamento?
+            </p>
+
+
+            <div
+              className="likert-scale"
+              style={{
+                gridTemplateColumns:
+                  `repeat(${values.length}, 1fr)`
+              }}
+            >
+
+              {values.map(value => (
+
+                <button
+                  type="button"
+                  key={value}
+                  className={
+                    studyAnswers[
+                      question.id
+                    ] === value
+                      ? 'likert-button selected'
+                      : 'likert-button'
+                  }
+                  onClick={() =>
+                    selectStudyAnswer(
+                      question.id,
+                      value
+                    )
+                  }
+                >
+                  {value}
+                </button>
+
+              ))}
+
+            </div>
+
+
+            <div className="likert-labels">
+
+              <span>
+                Per niente
+              </span>
+
+              <span>
+                Del tutto
+              </span>
+
+            </div>
+
+
+            <div className="navigation-buttons">
+
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => {
+
+                  if (
+                    currentStudyQuestion >
+                    0
+                  ) {
+
+                    setCurrentStudyQuestion(
+                      currentStudyQuestion - 1
+                    )
+
+                  } else {
+
+                    setCurrentStudyQuestion(
+                      studyLessonQuestions.length - 1
+                    )
+
+                    setCurrentSection(
+                      'study-lessons'
+                    )
+
+                  }
+
+                }}
+              >
+                Indietro
+              </button>
+
+
+              <button
+                type="button"
+                className="primary-button"
+                disabled={
+                  !studyAnswers[
+                  question.id
+                  ]
+                }
+                onClick={() => {
+
+                  if (
+                    currentStudyQuestion <
+                    studyOralQuestions.length - 1
+                  ) {
+
+                    setCurrentStudyQuestion(
+                      currentStudyQuestion + 1
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  } else {
+
+                    setCurrentStudyQuestion(0)
+
+                    setCurrentSection(
+                      'study-group'
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  }
+
+                }}
+              >
+
+                {
+                  currentStudyQuestion ===
+                    studyOralQuestions.length - 1
+                    ? 'Continua'
+                    : 'Avanti'
+                }
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  }
+  // ==================================================
+  // PASSO 3 - DURANTE I LAVORI DI GRUPPO
+  // ==================================================
+
+  if (
+    currentSection ===
+    'study-group'
+  ) {
+
+    const question =
+      studyGroupQuestions[
+      currentStudyQuestion
+      ]
+
+    if (!question) {
+      return null
+    }
+
+    const min =
+      question.min || 1
+
+    const max =
+      question.max || 7
+
+    const values =
+      Array.from(
+        {
+          length:
+            max - min + 1
+        },
+        (_, index) =>
+          min + index
+      )
+
+    const progress =
+      Math.round(
+        (
+          (
+            currentStudyQuestion + 1
+          ) /
+          studyGroupQuestions.length
+        ) *
+        100
+      )
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={3}
+          />
+
+          <div className="section-header">
+
+            <div className="section-step">
+              PASSO 3 DI 4
+            </div>
+
+            <div className="section-code">
+              SEZIONE 3D
+            </div>
+
+            <h1>
+              Durante i lavori di gruppo...
+            </h1>
+
+            <p>
+              Indica quanto questa frase
+              descrive il tuo comportamento
+              durante le attività di gruppo.
+            </p>
+
+          </div>
+
+
+          <div className="question-progress">
+
+            <div className="progress-label">
+
+              DOMANDA {
+                currentStudyQuestion + 1
+              } / {
+                studyGroupQuestions.length
+              }
+
+            </div>
+
+            <div className="progress-percentage">
+              {progress}%
+            </div>
+
+          </div>
+
+
+          <div className="progress-bar">
+
+            <div
+              className="progress-bar-fill"
+              style={{
+                width: `${progress}%`
+              }}
+            />
+
+          </div>
+
+
+          <div className="question-card">
+
+            <h2>
+              {question.domanda}
+            </h2>
+
+            <p className="answer-instruction">
+              Quanto descrive il tuo
+              comportamento?
+            </p>
+
+
+            <div
+              className="likert-scale"
+              style={{
+                gridTemplateColumns:
+                  `repeat(${values.length}, 1fr)`
+              }}
+            >
+
+              {values.map(value => (
+
+                <button
+                  type="button"
+                  key={value}
+                  className={
+                    studyAnswers[
+                      question.id
+                    ] === value
+                      ? 'likert-button selected'
+                      : 'likert-button'
+                  }
+                  onClick={() =>
+                    selectStudyAnswer(
+                      question.id,
+                      value
+                    )
+                  }
+                >
+                  {value}
+                </button>
+
+              ))}
+
+            </div>
+
+
+            <div className="likert-labels">
+
+              <span>
+                Per niente
+              </span>
+
+              <span>
+                Del tutto
+              </span>
+
+            </div>
+
+
+            <div className="navigation-buttons">
+
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => {
+
+                  if (
+                    currentStudyQuestion >
+                    0
+                  ) {
+
+                    setCurrentStudyQuestion(
+                      currentStudyQuestion - 1
+                    )
+
+                  } else {
+
+                    setCurrentStudyQuestion(
+                      studyOralQuestions.length - 1
+                    )
+
+                    setCurrentSection(
+                      'study-orals'
+                    )
+
+                  }
+
+                }}
+              >
+                Indietro
+              </button>
+
+
+              <button
+                type="button"
+                className="primary-button"
+                disabled={
+                  !studyAnswers[
+                  question.id
+                  ]
+                }
+                onClick={() => {
+
+                  if (
+                    currentStudyQuestion <
+                    studyGroupQuestions.length - 1
+                  ) {
+
+                    setCurrentStudyQuestion(
+                      currentStudyQuestion + 1
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  } else {
+
+                    setCurrentSection(
+                      'study-results'
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  }
+
+                }}
+              >
+
+                {
+                  currentStudyQuestion ===
+                    studyGroupQuestions.length - 1
+                    ? 'Vedi il risultato'
+                    : 'Avanti'
+                }
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  }
+  // ==================================================
+  // PASSO 3 - RISULTATI METODO DI STUDIO
+  // ==================================================
+
+  if (
+    currentSection ===
+    'study-results'
+  ) {
+
+    function calculateStudyScore(list) {
+
+      return list.reduce(
+        (total, question) =>
+          total +
+          Number(
+            studyAnswers[
+            question.id
+            ] || 0
+          ),
+        0
+      )
+    }
+
+
+    const homeScore =
+      calculateStudyScore(
+        studyHomeQuestions
+      )
+
+    const lessonScore =
+      calculateStudyScore(
+        studyLessonQuestions
+      )
+
+    const oralScore =
+      calculateStudyScore(
+        studyOralQuestions
+      )
+
+    const groupScore =
+      calculateStudyScore(
+        studyGroupQuestions
+      )
+
+
+    const studyAreas = [
+      {
+        label: 'Studio a casa',
+        score: homeScore
+      },
+      {
+        label: 'Durante le lezioni',
+        score: lessonScore
+      },
+      {
+        label: 'Durante le interrogazioni',
+        score: oralScore
+      },
+      {
+        label: 'Lavoro di gruppo',
+        score: groupScore
+      }
+    ]
+
+
+    const sortedAreas =
+      [...studyAreas].sort(
+        (a, b) =>
+          b.score - a.score
+      )
+
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={3}
+          />
+
+
+          <div className="step-result-card">
+
+            <div className="transition-label">
+              PASSO 3 COMPLETATO
+            </div>
+
+
+            <h1>
+              Il tuo metodo di studio
+            </h1>
+
+
+            <p className="step-result-intro">
+
+              Hai valutato il tuo comportamento
+              in quattro diverse situazioni.
+
+              Ogni area può ottenere un punteggio
+              compreso tra 4 e 28.
+
+            </p>
+
+
+            <div className="study-results-list">
+
+              {studyAreas.map(area => {
+
+                const percentage =
+                  Math.round(
+                    (
+                      area.score /
+                      28
+                    ) *
+                    100
+                  )
+
+                return (
+
+                  <div
+                    className="study-result-item"
+                    key={area.label}
+                  >
+
+                    <div className="study-result-header">
+
+                      <span>
+                        {area.label}
+                      </span>
+
+                      <strong>
+                        {area.score}/28
+                      </strong>
+
+                    </div>
+
+
+                    <div className="study-result-bar">
+
+                      <div
+                        className="study-result-bar-fill"
+                        style={{
+                          width:
+                            `${percentage}%`
+                        }}
+                      />
+
+                    </div>
+
+                  </div>
+
+                )
+
+              })}
+
+            </div>
+
+
+            <div className="summary-section">
+
+              <h2>
+                Il tuo punto di forza
+              </h2>
+
+              <div className="step-result-highlight">
+
+                <span className="step-result-label">
+                  Area con il punteggio più alto
+                </span>
+
+                <strong>
+                  {
+                    sortedAreas[0].label
+                  }
+                </strong>
+
+                <span>
+                  {
+                    sortedAreas[0].score
+                  } / 28
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div className="step-result-note">
+
+              Un punteggio più alto indica
+              che utilizzi con maggiore
+              frequenza comportamenti efficaci
+              in quella specifica situazione.
+
+              Questo risultato serve a
+              individuare sia i tuoi punti
+              di forza sia le aree sulle quali
+              puoi ancora migliorare.
+
+            </div>
+
+
+            <div className="navigation-buttons">
+
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => {
+
+                  setCurrentStudyQuestion(
+                    studyGroupQuestions.length - 1
+                  )
+
+                  setCurrentSection(
+                    'study-group'
+                  )
+
+                }}
+              >
+                Indietro
+              </button>
+
+
+              <button
+                type="button"
+                className="primary-button"
+                onClick={() => {
+
+                  setCurrentSection(
+                    'intro-choice'
+                  )
+
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                  })
+
+                }}
+              >
+                Continua al Passo 4
+              </button>
+
+            </div>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  }
+
+  // ==================================================
+  // PASSO 4 - INTRO LA SCELTA
+  // ==================================================
+
+  if (
+    currentSection ===
+    'intro-choice'
+  ) {
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={4}
+          />
+
+          <div className="transition-card">
+
+            <div className="transition-label">
+              PASSO 4 · LA SCELTA
+            </div>
+
+            <h1>
+              È il momento di scegliere
+            </h1>
+
+            <p>
+              Hai riflettuto sui tuoi interessi,
+              su ciò che vorresti trovare nel lavoro
+              e sul tuo metodo di studio.
+            </p>
+
+            <p>
+              Ora prova a mettere insieme
+              quanto emerso nei primi tre passi
+              e pensa all'indirizzo che senti
+              più vicino a te.
+            </p>
+
+            <button
+              type="button"
+              className="primary-button"
+              onClick={() => {
+
+                setCurrentSection(
+                  'choice-track'
+                )
+
+                window.scrollTo({
+                  top: 0,
+                  behavior: 'smooth'
+                })
+
+              }}
+            >
+              Inizia il Passo 4
+            </button>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  }
+
+  // ==================================================
+  // PASSO 4 - SCELTA DELL'INDIRIZZO
+  // ==================================================
+
+  if (
+    currentSection ===
+    'choice-track'
+  ) {
+
+    if (!trackChoiceQuestion) {
+      return null
+    }
+
+    const tracks = [
+      {
+        id: 'informatica',
+        label:
+          'Informatica e Telecomunicazioni'
+      },
+      {
+        id: 'elettronica',
+        label:
+          'Elettronica e Automazione'
+      },
+      {
+        id: 'meccanica',
+        label:
+          'Meccanica, Meccatronica ed Energia'
+      },
+      {
+        id: 'chimica',
+        label:
+          'Chimica, Materiali e Biotecnologie'
+      },
+      {
+        id: 'cat',
+        label:
+          'Costruzioni, Ambiente e Territorio'
+      }
+    ]
+
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={4}
+          />
+
+          <div className="section-header">
+
+            <div className="section-step">
+              PASSO 4 DI 4
+            </div>
+
+            <div className="section-code">
+              SEZIONE 4A
+            </div>
+
+            <h1>
+              La tua scelta
+            </h1>
+
+            <p>
+              Ora prova a indicare l'indirizzo
+              che pensi di scegliere.
+            </p>
+
+          </div>
+
+
+          <div className="question-card">
+
+            <h2>
+              {trackChoiceQuestion.domanda}
+            </h2>
+
+
+            <div className="track-choice-list">
+
+              {tracks.map(track => (
+
+                <button
+                  type="button"
+                  key={track.id}
+                  className={
+                    selectedTrack === track.id
+                      ? 'track-choice selected'
+                      : 'track-choice'
+                  }
+                  onClick={() =>
+                    setSelectedTrack(
+                      track.id
+                    )
+                  }
+                >
+
+                  <span className="track-choice-marker">
+
+                    {
+                      selectedTrack === track.id
+                        ? '✓'
+                        : ''
+                    }
+
+                  </span>
+
+                  <span>
+                    {track.label}
+                  </span>
+
+                </button>
+
+              ))}
+
+            </div>
+
+
+            <div className="navigation-buttons">
+
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() =>
+                  setCurrentSection(
+                    'intro-choice'
+                  )
+                }
+              >
+                Indietro
+              </button>
+
+
+              <button
+                type="button"
+                className="primary-button"
+                disabled={!selectedTrack}
+                onClick={() => {
+
+                  setCurrentChoiceQuestion(0)
+
+                  setCurrentSection(
+                    'choice-motivation'
+                  )
+
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                  })
+
+                }}
+              >
+                Continua
+              </button>
+
+            </div>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  }
+
+  // ==================================================
+  // PASSO 4 - MOTIVAZIONE DELLA SCELTA
+  // ==================================================
+
+  if (
+    currentSection ===
+    'choice-motivation'
+  ) {
+
+    const question =
+      choiceMotivationQuestions[
+      currentChoiceQuestion
+      ]
+
+    if (!question) {
+      return null
+    }
+
+    const selectedTrackLabel =
+      trackNames[selectedTrack]
+
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={4}
+          />
+
+          <div className="section-header">
+
+            <div className="section-step">
+              PASSO 4 DI 4
+            </div>
+
+            <div className="section-code">
+              SEZIONE 4B
+            </div>
+
+            <h1>
+              Motiva la tua scelta
+            </h1>
+
+            <p>
+              Rifletti sul collegamento tra
+              i tuoi interessi e l'indirizzo
+              che hai scelto.
+            </p>
+
+          </div>
+
+
+          <div className="question-progress">
+
+            <div className="progress-label">
+
+              RIFLESSIONE {
+                currentChoiceQuestion + 1
+              } / {
+                choiceMotivationQuestions.length
+              }
+
+            </div>
+
+          </div>
+
+
+          <div className="question-card">
+
+            <div className="choice-track-reminder">
+
+              <span>
+                Indirizzo scelto
+              </span>
+
+              <strong>
+                {selectedTrackLabel}
+              </strong>
+
+            </div>
+
+
+            <h2>
+              {question.domanda}
+            </h2>
+
+
+            <textarea
+              className="reflection-textarea"
+              value={
+                choiceAnswers[
+                question.id
+                ] || ''
+              }
+              onChange={event =>
+                updateChoiceAnswer(
+                  question.id,
+                  event.target.value
+                )
+              }
+              placeholder="Scrivi qui la tua risposta..."
+            />
+
+
+            <div className="navigation-buttons">
+
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => {
+
+                  if (
+                    currentChoiceQuestion >
+                    0
+                  ) {
+
+                    setCurrentChoiceQuestion(
+                      currentChoiceQuestion - 1
+                    )
+
+                  } else {
+
+                    setCurrentSection(
+                      'choice-track'
+                    )
+
+                  }
+
+                }}
+              >
+                Indietro
+              </button>
+
+
+              <button
+                type="button"
+                className="primary-button"
+                disabled={
+                  !choiceAnswers[
+                    question.id
+                  ]?.trim()
+                }
+                onClick={() => {
+
+                  if (
+                    currentChoiceQuestion <
+                    choiceMotivationQuestions.length - 1
+                  ) {
+
+                    setCurrentChoiceQuestion(
+                      currentChoiceQuestion + 1
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  } else {
+
+                    setCurrentChoiceQuestion(0)
+
+                    setCurrentSection(
+                      'choice-strengths'
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  }
+
+                }}
+              >
+
+                {
+                  currentChoiceQuestion ===
+                    choiceMotivationQuestions.length - 1
+                    ? 'Continua'
+                    : 'Avanti'
+                }
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  }
+  // ==================================================
+  // PASSO 4 - PUNTI DI FORZA
+  // ==================================================
+
+  if (
+    currentSection ===
+    'choice-strengths'
+  ) {
+
+    const question =
+      choiceStrengthQuestions[
+      currentChoiceQuestion
+      ]
+
+    if (!question) {
+      return null
+    }
+
+    const selectedTrackLabel =
+      trackNames[selectedTrack]
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={4}
+          />
+
+          <div className="section-header">
+
+            <div className="section-step">
+              PASSO 4 DI 4
+            </div>
+
+            <div className="section-code">
+              SEZIONE 4C
+            </div>
+
+            <h1>
+              I tuoi punti di forza
+            </h1>
+
+            <p>
+              Pensa a ciò che può aiutarti
+              ad affrontare bene i prossimi
+              tre anni di studio.
+            </p>
+
+          </div>
+
+
+          <div className="question-progress">
+
+            <div className="progress-label">
+
+              PUNTO DI FORZA {
+                currentChoiceQuestion + 1
+              } / {
+                choiceStrengthQuestions.length
+              }
+
+            </div>
+
+          </div>
+
+
+          <div className="question-card">
+
+            <div className="choice-track-reminder">
+
+              <span>
+                Indirizzo scelto
+              </span>
+
+              <strong>
+                {selectedTrackLabel}
+              </strong>
+
+            </div>
+
+
+            <h2>
+              {question.domanda}
+            </h2>
+
+
+            <textarea
+              className="reflection-textarea"
+              value={
+                choiceAnswers[
+                question.id
+                ] || ''
+              }
+              onChange={event =>
+                updateChoiceAnswer(
+                  question.id,
+                  event.target.value
+                )
+              }
+              placeholder="Scrivi qui la tua risposta..."
+            />
+
+
+            <div className="navigation-buttons">
+
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => {
+
+                  if (
+                    currentChoiceQuestion >
+                    0
+                  ) {
+
+                    setCurrentChoiceQuestion(
+                      currentChoiceQuestion - 1
+                    )
+
+                  } else {
+
+                    setCurrentChoiceQuestion(
+                      choiceMotivationQuestions.length - 1
+                    )
+
+                    setCurrentSection(
+                      'choice-motivation'
+                    )
+
+                  }
+
+                }}
+              >
+                Indietro
+              </button>
+
+
+              <button
+                type="button"
+                className="primary-button"
+                disabled={
+                  !choiceAnswers[
+                    question.id
+                  ]?.trim()
+                }
+                onClick={() => {
+
+                  if (
+                    currentChoiceQuestion <
+                    choiceStrengthQuestions.length - 1
+                  ) {
+
+                    setCurrentChoiceQuestion(
+                      currentChoiceQuestion + 1
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  } else {
+
+                    setCurrentChoiceQuestion(0)
+
+                    setCurrentSection(
+                      'choice-pros-cons'
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  }
+
+                }}
+              >
+
+                {
+                  currentChoiceQuestion ===
+                    choiceStrengthQuestions.length - 1
+                    ? 'Continua'
+                    : 'Avanti'
+                }
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  }
+  // ==================================================
+  // PASSO 4 - VANTAGGI E SVANTAGGI
+  // ==================================================
+
+  if (
+    currentSection ===
+    'choice-pros-cons'
+  ) {
+
+    const question =
+      choiceProsConsQuestions[
+      currentChoiceQuestion
+      ]
+
+    if (!question) {
+      return null
+    }
+
+    const selectedTrackLabel =
+      trackNames[selectedTrack]
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={4}
+          />
+
+          <div className="section-header">
+
+            <div className="section-step">
+              PASSO 4 DI 4
+            </div>
+
+            <div className="section-code">
+              SEZIONE 4D
+            </div>
+
+            <h1>
+              Vantaggi e svantaggi
+            </h1>
+
+            <p>
+              Immagina ora il tuo futuro
+              professionale collegato
+              all'indirizzo che hai scelto.
+            </p>
+
+          </div>
+
+
+          <div className="question-progress">
+
+            <div className="progress-label">
+
+              RIFLESSIONE {
+                currentChoiceQuestion + 1
+              } / {
+                choiceProsConsQuestions.length
+              }
+
+            </div>
+
+          </div>
+
+
+          <div className="question-card">
+
+            <div className="choice-track-reminder">
+
+              <span>
+                Indirizzo scelto
+              </span>
+
+              <strong>
+                {selectedTrackLabel}
+              </strong>
+
+            </div>
+
+
+            <h2>
+              {question.domanda}
+            </h2>
+
+
+            <textarea
+              className="reflection-textarea"
+              value={
+                choiceAnswers[
+                question.id
+                ] || ''
+              }
+              onChange={event =>
+                updateChoiceAnswer(
+                  question.id,
+                  event.target.value
+                )
+              }
+              placeholder="Scrivi qui la tua risposta..."
+            />
+
+
+            <div className="navigation-buttons">
+
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => {
+
+                  if (
+                    currentChoiceQuestion >
+                    0
+                  ) {
+
+                    setCurrentChoiceQuestion(
+                      currentChoiceQuestion - 1
+                    )
+
+                  } else {
+
+                    setCurrentChoiceQuestion(
+                      choiceStrengthQuestions.length - 1
+                    )
+
+                    setCurrentSection(
+                      'choice-strengths'
+                    )
+
+                  }
+
+                }}
+              >
+                Indietro
+              </button>
+
+
+              <button
+                type="button"
+                className="primary-button"
+                disabled={
+                  !choiceAnswers[
+                    question.id
+                  ]?.trim()
+                }
+                onClick={() => {
+
+                  if (
+                    currentChoiceQuestion <
+                    choiceProsConsQuestions.length - 1
+                  ) {
+
+                    setCurrentChoiceQuestion(
+                      currentChoiceQuestion + 1
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  } else {
+
+                    setCurrentSection(
+                      'final-results'
+                    )
+
+                    window.scrollTo({
+                      top: 0,
+                      behavior: 'smooth'
+                    })
+
+                  }
+
+                }}
+              >
+
+                {
+                  currentChoiceQuestion ===
+                    choiceProsConsQuestions.length - 1
+                    ? 'Vedi il riepilogo finale'
+                    : 'Avanti'
+                }
+
+              </button>
+
+            </div>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  }
+
+  // ==================================================
+  // RISULTATO FINALE
+  // ==================================================
+
+  if (
+    currentSection ===
+    'final-results'
+  ) {
+
+    function calculateStudyScore(list) {
+
+      return list.reduce(
+        (total, question) =>
+          total +
+          Number(
+            studyAnswers[
+            question.id
+            ] || 0
+          ),
+        0
+      )
+    }
+
+
+    const homeScore =
+      calculateStudyScore(
+        studyHomeQuestions
+      )
+
+    const lessonScore =
+      calculateStudyScore(
+        studyLessonQuestions
+      )
+
+    const oralScore =
+      calculateStudyScore(
+        studyOralQuestions
+      )
+
+    const groupScore =
+      calculateStudyScore(
+        studyGroupQuestions
+      )
+
+
+    const studyAreas = [
+      {
+        label: 'Studio a casa',
+        score: homeScore
+      },
+      {
+        label: 'Durante le lezioni',
+        score: lessonScore
+      },
+      {
+        label: 'Durante le interrogazioni',
+        score: oralScore
+      },
+      {
+        label: 'Lavoro di gruppo',
+        score: groupScore
+      }
+    ]
+
+
+    const topWorkCharacteristics =
+      workRanking.slice(0, 2)
+
+
+    const rankedCompetences =
+      workCompetenceQuestions
+        .map(question => ({
+
+          id: question.id,
+
+          domanda:
+            question.domanda,
+
+          value:
+            Number(
+              workAnswers[
+              question.id
+              ] || 0
+            )
+
+        }))
+        .sort(
+          (a, b) =>
+            b.value - a.value
+        )
+
+
+    const topCompetences =
+      rankedCompetences.slice(0, 5)
+
+
+    const recommended =
+      Array.isArray(
+        result?.recommended
+      )
+        ? result.recommended
+        : result?.recommended
+          ? [result.recommended]
+          : []
+
+
+    return (
+
+      <div className="app">
+
+        <main className="main-container">
+
+          <BrandHeader />
+
+          <StepsOverview
+            activeStep={4}
+          />
+
+
+          <div className="final-result-card">
+
+            <div className="transition-label">
+              PERCORSO COMPLETATO
+            </div>
+
+
+            <h1>
+              Il tuo profilo orientativo
+            </h1>
+
+
+            <p className="step-result-intro">
+              Hai completato tutti e quattro
+              i passi del percorso.
+              Questo riepilogo raccoglie
+              gli elementi principali emersi
+              dalle tue risposte.
+            </p>
+
+
+            {/* ======================================
+              SCELTA DELLO STUDENTE
+             ====================================== */}
+
+            <section className="final-section final-choice-section">
+
+              <div className="final-section-number">
+                4
+              </div>
+
+              <div className="final-section-content">
+
+                <span className="final-section-label">
+                  LA TUA SCELTA
+                </span>
+
+                <h2>
+                  {trackNames[selectedTrack]}
+                </h2>
+
+                <p>
+                  Questo è l'indirizzo che,
+                  dopo il percorso di riflessione,
+                  hai indicato come tua scelta.
+                </p>
+
+              </div>
+
+            </section>
+
+
+            {/* ======================================
+              PASSO 1 - INTERESSI
+             ====================================== */}
+
+            <section className="final-section">
+
+              <div className="final-section-number">
+                1
+              </div>
+
+              <div className="final-section-content">
+
+                <span className="final-section-label">
+                  INTERESSI
+                </span>
+
+                <h2>
+                  Le aree più vicine
+                  ai tuoi interessi
+                </h2>
+
+
+                {recommended.length > 0 && (
+
+                  <div className="final-highlight">
+
+                    {recommended.map(
+                      item => (
+
+                        <div
+                          key={
+                            item.indirizzo
+                          }
+                          className="final-highlight-row"
+                        >
+
+                          <strong>
+                            {
+                              trackNames[
+                              item.indirizzo
+                              ]
+                            }
+                          </strong>
+
+                          <span>
+                            {item.punteggio} punti
+                          </span>
+
+                        </div>
+
+                      )
+                    )}
+
+                  </div>
+
+                )}
+
+
+                <div className="final-ranking">
+
+                  {result?.ranking?.map(
+                    (
+                      item,
+                      index
+                    ) => (
+
+                      <div
+                        key={
+                          item.indirizzo
+                        }
+                        className="final-ranking-row"
+                      >
+
+                        <span>
+                          {index + 1}.
+                          {' '}
+                          {
+                            trackNames[
+                            item.indirizzo
+                            ]
+                          }
+                        </span>
+
+                        <strong>
+                          {item.punteggio}
+                        </strong>
+
+                      </div>
+
+                    )
+                  )}
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            {/* ======================================
+              PASSO 2 - LAVORO
+             ====================================== */}
+
+            <section className="final-section">
+
+              <div className="final-section-number">
+                2
+              </div>
+
+              <div className="final-section-content">
+
+                <span className="final-section-label">
+                  LAVORO
+                </span>
+
+                <h2>
+                  Cosa cerchi nel lavoro
+                </h2>
+
+
+                <div className="final-subsection">
+
+                  <h3>
+                    Le tue prime due priorità
+                  </h3>
+
+                  {topWorkCharacteristics.map(
+                    (
+                      item,
+                      index
+                    ) => (
+
+                      <div
+                        key={item.id}
+                        className="final-priority-row"
+                      >
+
+                        <span className="final-priority-number">
+                          {index + 1}
+                        </span>
+
+                        <span>
+                          {item.domanda}
+                        </span>
+
+                      </div>
+
+                    )
+                  )}
+
+                </div>
+
+
+                <div className="final-subsection">
+
+                  <h3>
+                    Competenze che ritieni
+                    più forti
+                  </h3>
+
+                  {topCompetences.map(
+                    competence => (
+
+                      <div
+                        key={
+                          competence.id
+                        }
+                        className="final-competence-row"
+                      >
+
+                        <span>
+                          {
+                            competence.domanda
+                          }
+                        </span>
+
+                        <strong>
+                          {
+                            competence.value
+                          }/7
+                        </strong>
+
+                      </div>
+
+                    )
+                  )}
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            {/* ======================================
+              PASSO 3 - METODO DI STUDIO
+             ====================================== */}
+
+            <section className="final-section">
+
+              <div className="final-section-number">
+                3
+              </div>
+
+              <div className="final-section-content">
+
+                <span className="final-section-label">
+                  METODO DI STUDIO
+                </span>
+
+                <h2>
+                  Il tuo profilo di studio
+                </h2>
+
+
+                <div className="study-results-list">
+
+                  {studyAreas.map(
+                    area => {
+
+                      const percentage =
+                        Math.round(
+                          (
+                            area.score /
+                            28
+                          ) *
+                          100
+                        )
+
+                      return (
+
+                        <div
+                          className="study-result-item"
+                          key={area.label}
+                        >
+
+                          <div className="study-result-header">
+
+                            <span>
+                              {area.label}
+                            </span>
+
+                            <strong>
+                              {area.score}/28
+                            </strong>
+
+                          </div>
+
+                          <div className="study-result-bar">
+
+                            <div
+                              className="study-result-bar-fill"
+                              style={{
+                                width:
+                                  `${percentage}%`
+                              }}
+                            />
+
+                          </div>
+
+                        </div>
+
+                      )
+
+                    }
+                  )}
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            {/* ======================================
+              MOTIVAZIONI FINALI
+             ====================================== */}
+
+            <section className="final-section">
+
+              <div className="final-section-number">
+                ✓
+              </div>
+
+              <div className="final-section-content">
+
+                <span className="final-section-label">
+                  LA TUA RIFLESSIONE
+                </span>
+
+                <h2>
+                  Perché questa scelta?
+                </h2>
+
+
+                {choiceMotivationQuestions.map(
+                  question => (
+
+                    <div
+                      key={question.id}
+                      className="final-reflection"
+                    >
+
+                      <strong>
+                        {question.domanda}
+                      </strong>
+
+                      <p>
+                        {
+                          choiceAnswers[
+                          question.id
+                          ]
+                        }
+                      </p>
+
+                    </div>
+
+                  )
+                )}
+
+
+                <h3 className="final-small-heading">
+                  I tuoi punti di forza
+                </h3>
+
+
+                {choiceStrengthQuestions.map(
+                  (
+                    question,
+                    index
+                  ) => (
+
+                    <div
+                      key={question.id}
+                      className="final-strength"
+                    >
+
+                      <span>
+                        {index + 1}
+                      </span>
+
+                      <p>
+                        {
+                          choiceAnswers[
+                          question.id
+                          ]
+                        }
+                      </p>
+
+                    </div>
+
+                  )
+                )}
+
+
+                <div className="final-pros-cons">
+
+                  {choiceProsConsQuestions.map(
+                    (
+                      question,
+                      index
+                    ) => (
+
+                      <div
+                        key={question.id}
+                        className="final-pros-cons-box"
+                      >
+
+                        <h3>
+                          {
+                            index === 0
+                              ? 'Vantaggi'
+                              : 'Svantaggi'
+                          }
+                        </h3>
+
+                        <p>
+                          {
+                            choiceAnswers[
+                            question.id
+                            ]
+                          }
+                        </p>
+
+                      </div>
+
+                    )
+                  )}
+
+                </div>
+
+              </div>
+
+            </section>
+
+
+            {/* ======================================
+              CONCLUSIONE
+             ====================================== */}
+
+            <div className="final-note">
+
+              <strong>
+                Ricorda:
+              </strong>
+
+              il questionario non decide
+              quale indirizzo devi scegliere.
+
+              Serve a raccogliere in modo
+              strutturato interessi,
+              aspettative, competenze
+              e riflessioni utili per
+              prendere una decisione
+              più consapevole.
+
+            </div>
+
+
+            <div className="navigation-buttons">
+
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={restartQuestionnaire}
+              >
+                ↻ Ripeti il questionario
+              </button>
+
+
+              <button
+                type="button"
+                className="primary-button"
+                onClick={() =>
+                  window.print()
+                }
+              >
+                Stampa / Salva PDF
+              </button>
+
+            </div>
+
+          </div>
+
+        </main>
+
+      </div>
+
+    )
+  
 
   }
 
