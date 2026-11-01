@@ -641,6 +641,18 @@ function App() {
 
   }
 
+  // =================================
+  // FOOTER
+  // =================================
+
+  function AppFooter() {
+  return (
+    <footer className="app-footer">
+      &copy; Prof. Stefano Murtas · ITT Buonarroti Trento
+    </footer>
+  )
+}
+
   // ==================================================
   // SPOSTA AREA VERSO IL BASSO
   // ==================================================
@@ -1330,6 +1342,8 @@ function App() {
 
           </div>
 
+        <AppFooter />
+
         </main>
 
       </div>
@@ -1363,7 +1377,7 @@ function App() {
             </p>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -1423,7 +1437,7 @@ function App() {
                 Inizia il questionario
               </button>
             </div>
-
+<AppFooter />
           </div>
 
         </main>
@@ -1501,7 +1515,7 @@ function App() {
               </button>
 
             </div>
-
+<AppFooter />
           </main>
 
         </div>
@@ -1663,7 +1677,7 @@ function App() {
               </div>
 
             </div>
-
+<AppFooter />
           </main>
 
         </div>
@@ -1739,7 +1753,7 @@ function App() {
               </button>
 
             </div>
-
+<AppFooter />
           </main>
 
         </div>
@@ -1780,7 +1794,7 @@ function App() {
                 </h2>
 
               </div>
-
+<AppFooter />
             </main>
 
           </div>
@@ -2036,7 +2050,7 @@ function App() {
               </div>
 
             </div>
-
+<AppFooter />
           </main>
 
         </div>
@@ -2118,7 +2132,7 @@ function App() {
               </button>
 
             </div>
-
+<AppFooter />
           </main>
 
         </div>
@@ -2160,7 +2174,7 @@ function App() {
                 </h2>
 
               </div>
-
+<AppFooter />
             </main>
 
           </div>
@@ -2303,7 +2317,7 @@ function App() {
               </div>
 
             </div>
-
+<AppFooter />
           </main>
 
         </div>
@@ -2527,7 +2541,7 @@ function App() {
             </div>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -2590,7 +2604,7 @@ function App() {
             </button>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -2739,7 +2753,7 @@ function App() {
             </div>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -2807,7 +2821,7 @@ function App() {
             </button>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -3060,7 +3074,7 @@ function App() {
             </div>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -3131,7 +3145,7 @@ function App() {
             </button>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -3332,7 +3346,7 @@ function App() {
             </div>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -3566,7 +3580,7 @@ function App() {
             </div>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -3674,7 +3688,7 @@ function App() {
             </button>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -3937,7 +3951,7 @@ function App() {
             </div>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -4204,7 +4218,7 @@ function App() {
             </div>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -4471,7 +4485,7 @@ function App() {
             </div>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -4735,7 +4749,7 @@ function App() {
             </div>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -4991,7 +5005,7 @@ function App() {
             </div>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -5063,7 +5077,7 @@ function App() {
             </button>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -5234,7 +5248,7 @@ function App() {
             </div>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -5435,7 +5449,7 @@ function App() {
             </div>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -5638,7 +5652,7 @@ function App() {
             </div>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -5839,7 +5853,7 @@ function App() {
             </div>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>
@@ -6461,7 +6475,7 @@ function App() {
             </div>
 
           </div>
-
+<AppFooter />
         </main>
 
       </div>

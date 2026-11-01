@@ -2777,3 +2777,26 @@ button {
     }
 
 }
+
+.app-footer {
+    margin-top: 32px;
+    padding: 18px 0 10px;
+
+    text-align: center;
+
+    font-size: 13px;
+    color: #7a8796;
+}
+
+@media print {
+    .app-footer {
+        display: none !important;
+    }
+}
+
+@media print {
+    @page {
+        size: A4;
+        margin: 12mm;
+    }
+}
