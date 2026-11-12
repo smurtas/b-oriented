@@ -1,0 +1,20 @@
+/* Applicare bo-header-with-access all'elemento blu già esistente nell'header. */
+.bo-header-with-access { position: relative; }
+.bo-access { position: absolute; right: 22px; top: 18px; z-index: 30; color: #1b416d; font-family: inherit; }
+.bo-access-trigger { display: flex; align-items: center; gap: 9px; max-width: 245px; border: 1px solid rgba(255,255,255,.76); border-radius: 8px; background: rgba(255,255,255,.10); color: white; padding: 9px 13px; font: inherit; font-size: .88rem; font-weight: 650; cursor: pointer; }
+.bo-access-trigger span:nth-child(2) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bo-access-trigger:hover, .bo-access-trigger:focus-visible { background: rgba(255,255,255,.20); }
+.bo-access-panel { position: absolute; right: 0; top: calc(100% + 10px); width: min(310px, calc(100vw - 32px)); box-sizing: border-box; padding: 18px; border: 1px solid #dce5ef; border-radius: 12px; background: white; color: #1b416d; box-shadow: 0 12px 32px rgba(13,45,80,.20); text-align: left; }
+.bo-access-panel-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.bo-access-panel-head strong { font-size: 1.05rem; }
+.bo-access-close { border: 0; background: transparent; color: #42566f; font-size: 1.6rem; cursor: pointer; }
+.bo-access-muted { font-size: .84rem; color: #586b82; line-height: 1.5; margin: 12px 0; overflow-wrap: anywhere; }
+.bo-access-name { font-weight: 700; margin-bottom: 0; }
+.bo-access-google { display: flex; justify-content: center; min-height: 40px; }
+.bo-access-error { font-size: .83rem; color: #aa1b2c; line-height: 1.4; }
+.bo-access-logout { width: 100%; border: 1px solid #1b416d; color: #1b416d; background: white; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 700; }
+.bo-access-logout:disabled { opacity: .6; cursor: wait; }
+@media (max-width: 730px) {
+  .bo-access { top: 12px; right: 12px; }
+  .bo-access-trigger { padding: 7px 9px; max-width: 150px; font-size: .78rem; }
+}

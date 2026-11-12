@@ -2800,3 +2800,98 @@ button {
         margin: 12mm;
     }
 }
+
+
+/* Posizionamento del login nell'header */
+.home-topbar {
+  position: relative;
+}
+
+.home-topbar-access {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+/* Adattamento per smartphone */
+@media (max-width: 768px) {
+  .home-topbar-access {
+    position: static;
+    transform: none;
+  }
+
+  .home-topbar {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+}
+
+
+/* ====================================
+   B_ORIENTED - LOGIN NELL'HEADER
+   ==================================== */
+
+.home-topbar {
+  position: relative;
+}
+
+/* Contenitore del login */
+.home-topbar-access {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  transform: none;
+  z-index: 50;
+}
+
+/* Elimina il doppio posizionamento */
+.home-topbar-access .bo-access {
+  position: relative;
+  top: auto;
+  right: auto;
+}
+
+/* Pulsante istituzionale */
+.home-topbar-access .bo-access-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  padding: 9px 15px;
+  border: 1px solid rgba(255,255,255,0.65);
+  border-radius: 8px;
+
+  background: rgba(255,255,255,0.10);
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.home-topbar-access .bo-access-trigger:hover {
+  background: rgba(255,255,255,0.20);
+}
+
+/* Schermi piccoli */
+@media (max-width: 1050px) {
+  .home-topbar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .home-topbar-access {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+  }
+}
+

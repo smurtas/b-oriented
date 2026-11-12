@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import {DragDropProvider} from '@dnd-kit/react'
 import {useSortable} from '@dnd-kit/react/sortable'
+import GoogleAccess from './GoogleAccess.jsx'
 import {move} from '@dnd-kit/helpers'
 import './App.css'
 
@@ -1409,7 +1410,12 @@ function App() {
                   className="home-topbar-logo"
                 />
                 <div className="home-topbar-title">B-oriented</div>
+                
               </div>
+                      {/* Login Google: in alto a destra */}
+        <div className="home-topbar-access">
+          <GoogleAccess />
+        </div>
             </div>
 
             <div className="home-inner">

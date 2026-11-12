@@ -16,6 +16,9 @@ dist/
 *.local
 .env
 .env.*
+.env.local
+.env.*.local
+
 
 # macOS
 .DS_Store
@@ -26,3 +29,6 @@ dist/
 # Google Service Account credentials
 server/credentials.json
 server/node_modules/
+
+# Build
+dist/

@@ -3,11 +3,24 @@ const cors = require('cors')
 const { google } = require('googleapis')
 const path = require('path')
 
+// Carica le variabili dal file server/.env
+require('dotenv').config({
+    path: path.join(__dirname, '.env')
+})
+
+// Importa le API per l'autenticazione Google
+const { authRouter } = require('./auth')
+
+// Configurazione Express
 const app = express()
 const PORT = 3000
 
 app.use(cors())
 app.use(express.json())
+
+// API per autenticazione Google
+app.use('/api/auth', authRouter)
+
 
 // ======================================================
 // GOOGLE SHEETS
